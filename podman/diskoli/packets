@@ -1,0 +1,8 @@
+flask
+neo4j
+pymongo
+kafka
+flask-kafka
+kafka-python-ng
+psycopg2-binary
+kafka-python

@@ -1,0 +1,36 @@
+# Use the official Grafana image from Docker Hub as the base image
+FROM grafana/grafana:latest
+
+# Switch to root user to perform installation and configuration
+USER root
+
+# Set environment variables
+ENV GF_SECURITY_ADMIN_USER=admin \
+    GF_SECURITY_ADMIN_PASSWORD=12345678 \
+    GF_LOG_MODE=file
+
+# Create necessary directories and set up the environment
+RUN mkdir /connection_info \
+    && mkdir -p /workdir/templates \
+    && mkdir -p /workdir/renders \
+    && touch /workdir/renders/grafana-provision-v2.yaml 
+RUN apk update \
+    && apk add --no-cache python3 \
+    && mkdir /venv
+
+# Define mountable volumes
+VOLUME /connection_info
+
+# Copy files into the image
+COPY activate_virtual_env.sh /activate_virtual_env.sh
+COPY test.py /workdir/file_generator.py
+COPY grafana-provision-v2.jinja /workdir/templates
+COPY grafana_entrypoint.sh /
+
+# Make scripts executable
+RUN chmod u+x /activate_virtual_env.sh \
+    && chmod u+x /grafana_entrypoint.sh
+
+# Set the entrypoint to the custom script
+ENTRYPOINT ["/grafana_entrypoint.sh"]
+

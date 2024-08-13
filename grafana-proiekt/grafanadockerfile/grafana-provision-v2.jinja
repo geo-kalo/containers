@@ -1,0 +1,24 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB_v2_Flux_test
+    type: influxdb
+    access: proxy
+    orgId: 1
+    url: http://myinfluxv2:8086
+    isDefault: true
+    jsonData:
+      #httpMode: Flux 
+      version: Flux
+      organization: kalogeropoulos_org 
+      defaultBucket: grafana
+      tlsSkipVerify: true
+    secureJsonData:
+      token: '{{ token }}'
+    
+
+
+    #orgId: "{{ orgId }}"
+    #default: true
+
+

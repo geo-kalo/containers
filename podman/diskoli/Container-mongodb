@@ -1,0 +1,11 @@
+from 	docker.io/library/mongo
+
+ENV	MONGO_INITDB_ROOT_USERNAME=admin 
+ENV	MONGO_INITDB_ROOT_PASSWORD=666
+ENV	MONGO_INITDB_DATABASE: bands
+
+volume  mongo:/data/db 
+
+
+#entrypoint ['/usr/local/bin/docker-entrypoint.sh'] 
+#cmd     ['mongod']

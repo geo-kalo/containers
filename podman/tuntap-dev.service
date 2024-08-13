@@ -1,0 +1,15 @@
+[Unit]
+Description=/dev/net/tun device node
+Requires=sysinit.target
+After=sysinit.target
+Documentation=https://www.kernel.org/doc/Documentation/networking/tuntap.txt
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mkdir -p /dev/net
+ExecStart=mknod /dev/net/tun c 10 200
+ExecStart=chmod 0666 /dev/net/tun
+
+[Install]
+WantedBy=network-pre.target

@@ -1,0 +1,6 @@
+from 		docker.io/library/telegraf
+
+copy	docker_telegraf.conf	/etc/telegraf/telegraf.conf
+
+volume	/var/run/docker.sock
+expose	8125

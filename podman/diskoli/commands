@@ -1,0 +1,293 @@
+podman run -d --name neo4j --publish=7474:7474 --publish=7687:7687  --network external --ip 10.89.1.10  -v neo4j:/data neo4j 
+podman  run -d --name test   --network external --ip 10.89.1.20  ubuntu tail -f /dev/null
+podman run -d --name neo4j --publish=7474:7474 --publish=7687:7687  --network external --ip 10.89.1.10  -v neo4j:/data --env NEO4J_AUTH=neo4j/h3rcul3s!  --restart always neo4j
+podman run -d --name neo4j --publish=7474:7474 --publish=7687:7687  --network external --ip 10.89.1.10 -v neo4jconfg:/var/lib/neo4j  -v neo4j:/data --env NEO4J_AUTH=neo4j/h3rcul3s!  --restart always neo4j
+
+neo4j-admin dbms set-initial-password 12345678
+
+
+
+
+apt-get install wget curl nano software-properties-common dirmngr apt-transport-https gnupg gnupg2 ca-certificates lsb-release ubuntu-keyring unzip -y
+
+curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/neo4j.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/neo4j.gpg] https://debian.neo4j.com stable latest" | sudo tee -a /etc/apt/sources.list.d/neo4j.list
+
+apt-get install neo4j -y
+
+
+https://www.techrepublic.com/article/how-to-install-neo4j-ubuntu-server/
+
+
+
+
+
+
+podman run -d --name neo4j --publish=7474:7474 --publish=7687:7687  --network external --ip 10.89.1.10 -v neo4jconfg:/var/lib/neo4j  -v neo4j:/data  ubuntu tail -f /dev/null
+
+
+
+
+
+
+
+
+
+
+apt update -y && apt-get upgrade -y
+apt install vim openvpn net-tools procps tcpdump inetutils-ping  iproute2 inetutils-ping  wget curl nano software-properties-common dirmngr apt-transport-https gnupg gnupg2 ca-certificates lsb-release ubuntu-keyring unzip -y
+
+curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | gpg --dearmor -o /usr/share/keyrings/neo4j.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/neo4j.gpg] https://debian.neo4j.com stable latest" | tee -a /etc/apt/sources.list.d/neo4j.list
+
+apt-get update -y
+apt-get install neo4j -y
+/etc/init.d/neoj4 start
+
+
+
+run apt update -y && apt-get upgrade -y && apt install vim openvpn net-tools procps tcpdump inetutils-ping  iproute2 inetutils-ping  wget curl nano software-properties-common dirmngr apt-transport-https gnupg gnupg2 ca-certificates lsb-release unzip -y && curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | gpg --dearmor -o /usr/share/keyrings/neo4j.gpg && echo "deb [signed-by=/usr/share/keyrings/neo4j.gpg] https://debian.neo4j.com stable latest" | tee -a /etc/apt/sources.list.d/neo4j.list && apt-get update -y && apt-get install neo4j -y
+
+run apt update -y && apt install python3-full  python3-pip python3-venv virtualenv apache2 libapache2-mod-wsgi-py3  curl -y && apt install net-tools -y && apt install vim procps inetutils-ping -y  
+
+
+
+
+
+podman  build -t mymongodb -f Container-mongodb
+
+podman  run -d --name mongodb-server -p 27017:27017 --network external --ip 10.89.1.30  -v mongo:/data/db mymongodb:latest
+podman run -d --name flask --network external --ip 10.89.1.20 --publish=80:80 localhost/flask
+podman run -d --name neo4j --publish=7474:7474 --publish=7687:7687  --network external --ip 10.89.1.10 -v neo4j:/var/lib/neo4j neo4jserver  tail -f /dev/null
+podman run -d -p 9092:9092 --name broker --network external --ip 10.89.1.40 apache/kafka:latest
+podman run -d  --name psql-fuse  -e POSTGRES_PASSWORD=666 -e POSTGRES_USER=admin -e POSTGRES_DB=mytestdb --network external --ip 10.89.1.50 -v psql-fuse:/var/lib/postgresql/data  psql-fuse
+
+
+
+
+/etc/apache2/sites-enabled/000-default.conf
+
+
+
+
+
+MATCH (x:Person {name: "Tom Hanks"})-[:ACTED_IN]->(y) RETURN x,y
+
+
+
+
+
+
+
+
+
+
+
+mongosh -u admin -p 666
+
+
+
+db.user.insertMany([
+    { name: "Bohemian Rhapsody", date_of_release: "1975" },
+    { name: "Stairway to Heaven", date_of_release: "1971" },
+    { name: "Hotel California", date_of_release: "1976" },
+    { name: "Sweet Child O' Mine", date_of_release: "1987" },
+    { name: "Smells Like Teen Spirit", date_of_release: "1991" },
+    { name: "Imagine", date_of_release: "1971" },
+    { name: "Hey Jude", date_of_release: "1968" },
+    { name: "Billie Jean", date_of_release: "1983" },
+    { name: "Like a Rolling Stone", date_of_release: "1965" },
+    { name: "Purple Haze", date_of_release: "1967" },
+    { name: "Wonderwall", date_of_release: "1995" },
+    { name: "Let It Be", date_of_release: "1970" },
+    { name: "Comfortably Numb", date_of_release: "1979" },
+    { name: "Lose Yourself", date_of_release: "2002" },
+    { name: "Thriller", date_of_release: "1982" },
+    { name: "Rolling in the Deep", date_of_release: "2010" },
+    { name: "What’s Going On", date_of_release: "1971" },
+    { name: "One", date_of_release: "1991" },
+    { name: "I Will Always Love You", date_of_release: "1992" },
+    { name: "Livin' on a Prayer", date_of_release: "1986" }
+]);
+This command will insert 20 documents into the user collection, each representing a song with its name and the year of release. Adjust the collection name (user) if necessary to fit your database schema.
+
+
+
+
+
+how can i query the inserted data?
+ChatGPT
+To query the data you have inserted into your MongoDB collection, you can use various MongoDB query commands. Below are examples of some common queries you might use:
+
+Find all documents in the collection:
+
+javascript
+Copy code
+db.user.find().pretty()
+Find a document by the song name:
+
+javascript
+Copy code
+db.user.find({ name: "Bohemian Rhapsody" }).pretty()
+Find documents released in a specific year:
+
+javascript
+Copy code
+db.user.find({ date_of_release: "1971" }).pretty()
+Find documents with a name containing a specific string:
+
+javascript
+Copy code
+db.user.find({ name: /Thriller/ }).pretty()
+Count the number of documents in the collection:
+
+javascript
+Copy code
+db.user.countDocuments()
+Find documents released between certain years:
+
+javascript
+Copy code
+db.user.find({ 
+    date_of_release: { 
+        $gte: "1970", 
+        $lte: "1980" 
+    } 
+}).pretty()
+Find documents sorted by release year in descending order:
+
+javascript
+Copy code
+db.user.find().sort({ date_of_release: -1 }).pretty()
+Project only the song names (without the release date):
+
+javascript
+Copy code
+db.user.find({}, { name: 1, _id: 0 }).pretty()
+Find the first document in the collection:
+
+javascript
+Copy code
+db.user.findOne()
+Example of using these queries in MongoDB shell:
+Assuming you are in the MongoDB shell and have selected the correct database, you can use these commands directly:
+
+javascript
+Copy code
+// Find all documents
+db.user.find().pretty()
+
+// Find a document by the song name
+db.user.find({ name: "Bohemian Rhapsody" }).pretty()
+
+// Find documents released in a specific year
+db.user.find({ date_of_release: "1971" }).pretty()
+
+// Find documents with a name containing a specific string
+db.user.find({ name: /Thriller/ }).pretty()
+
+// Count the number of documents in the collection
+db.user.countDocuments()
+
+// Find documents released between certain years
+db.user.find({ 
+    date_of_release: { 
+        $gte: "1970", 
+        $lte: "1980" 
+    } 
+}).pretty()
+
+// Find documents sorted by release year in descending order
+db.user.find().sort({ date_of_release: -1 }).pretty()
+
+// Project only the song names (without the release date)
+db.user.find({}, { name: 1, _id: 0 }).pretty()
+
+// Find the first document in the collection
+db.user.findOne()
+
+
+
+
+
+kafka
+
+https://developer.confluent.io/what-is-apache-kafka/
+https://www.tutorialspoint.com/apache_kafka/index.htm
+https://kafka.apache.org/quickstart
+https://www.conduktor.io/kafka/kafka-topics-cli-tutorial/
+
+
+
+-e  JAVA_HOME=/opt/jdk/jdk-22.0.2 -e PATH=$PATH:$JAVA_HOME/bin
+
+apt update -y && apt install -y wget && mkdir /java && wget https://download.oracle.com/java/22/latest/jdk-22_linux-x64_bin.tar.gz && tar xf /jdk-22_linux-x64_bin.tar.gz -C /java && mkdir /opt/jdk && mv /java/jdk-22.0.2 /opt/jdk && update-alternatives --install /usr/bin/java java /opt/jdk/jdk-22.0.2/bin/java 100 && export PATH=$PATH:$JAVA_HOME/bin && source ~/.bashrc && wget https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.8.4/apache-zookeeper-3.8.4.tar.g
+
+
+https://medium.com/@prabhumane/building-a-simple-distributed-system-with-python-flask-and-apache-kafka-34a0916a8d8
+https://kafka-python.readthedocs.io/en/master/usage.html
+with docker
+
+podman run  -d  --name broker -e KAFKA_NODE_ID=1  -e KAFKA_PROCESS_ROLES=broker,controller  -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://broker:9092 -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT  -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1  -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1  -e KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0  -e KAFKA_NUM_PARTITIONS=3 -p 9092:9092 -p 9093:9093 -p 9095:9095 --name broker --network external --ip 10.89.1.40 apache/kafka:latest
+
+
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic actor-topic
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic songs-topic
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic song-topic
+
+
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092   --list 
+actor-topic
+songs-topic
+1f476ef0541e:/opt/kafka/bin$ 
+
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+/opt/kafka/bin/kafka-console-consumer.sh  --bootstrap-server 10.89.1.40:9092 --topic actor-topic --from-beginning
+
+
+
+
+
+
+https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+
+
+
+
+curl -X POST 'http://10.0.47.59/produce_actor/Tom%20Hanks'
+curl  'http://10.0.47.59/produce_actor/Tom%20Hanks' ;curl  'http://10.0.47.59/produce_song/1971'
+
+
+
+curl  'http://10.0.47.59/produce_actor/Tom%20Hanks' ;curl  'http://10.0.47.59/produce_song/1971'
+curl  'http://10.0.47.59/produce_actor/Julia%20Roberts' ;curl  'http://10.0.47.59/produce_song/1971'
+
+psql
+ON DELETE CASCADE
+
+CREATE TABLE actor (
+    element_id VARCHAR PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    born INT NOT NULL
+);
+
+CREATE TABLE movies (
+    element_id VARCHAR PRIMARY KEY,
+    title VARCHAR NOT NULL,
+    tagline TEXT,
+    released INT NOT NULL,
+    actor_element_id VARCHAR NOT NULL,
+    FOREIGN KEY (actor_element_id) REFERENCES actor (element_id) 
+);
+
+CREATE TABLE songs (
+    id VARCHAR PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    actor_element_id VARCHAR NOT NULL,
+    FOREIGN KEY (actor_element_id) REFERENCES actor (element_id)
+)
+
+DELETE FROM movies WHERE actor_element_id = '4:e1159a69-1e82-4dd9-96ca-6459465c7ab8:71';
+DELETE FROM actor WHERE element_id = '4:e1159a69-1e82-4dd9-96ca-6459465c7ab8:71';

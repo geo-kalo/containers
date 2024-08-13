@@ -1,0 +1,59 @@
+podman build -t myowncloud -f Container-owncloud
+podman run -d --name owncloud -v apps-owncloud:/var/www/html/apps -v config-owncloud:/var/www/html/config -v data-owncloud:/var/www/html/data --network external -p 80:80  myowncloud:latest
+
+
+============================================================================================================================================================================================
+podman build -t myinfluxv2 -f Container-influxdbv2
+podman  run -d --name myinfluxv2 -p 8086:8086 --network external -v influxdb2-data:/var/lib/influxdb2  -v influxdb2-config:/etc/influxdb2 -v connection_info:/connection_info myinfluxv2
+
+
+influx auth list
+curl -X GET http://localhost:8086/api/v2/orgs   -H "Authorization: Token 1M_n_m2Th3AcVUVMMsvRHE7ztTvJrRsV0aOcwg1dhsJYYe9NDV33BqyMyPvxAn5hFvtYT3590Gs3rQ0huqOmyw=="
+
+influx auth create --org kalogeropoulos_org  --all-access
+influx  org list  | awk '{print $1}' | grep -v ID > org
+influx auth create --org kalogeropoulos_org  --all-access  > test  && cat test | awk '{print $2}' | grep -v Description > token
+
+
+============================================================================================================================================================================================
+
+grafana
+
+podman  build -t mygrafana -f Containerfile-grafana 
+podman run -d --name=grafana -p 3000:3000 --network external -v connection_info:/connection_info -e GF_LOG_MODE=file mygrafana:latest
+
+apk update
+apk add python3
+
+
+
+
+
+
+============================================================================================================================================================================================
+telegraf
+
+telegraf --input-filter docker --output-filter influxdb config > docker_telegraf.conf
+ --security-opt label=disable
+podman  run -d --privileged  --name mytelegraf --network external  -p 8125:8125 -v /run/user/1000/podman/podman.sock:/var/run/docker.sock mytelegraf:latest
+
+
+
+
+data-owncloud
+apps-owncloud
+config-owncloud
+connection_info
+influxdb2-config
+influxdb2-data
+
+podman build -t myowncloud -f Container-owncloud
+docker build -t mytelegraf -f Containerfile-telegraf .
+docker build -t mygrafana -f Containerfile-grafana .
+docker build -t myinflux -f Container-influxdbv2 .
+
+
+podman run -d --name owncloud -v apps-owncloud:/var/www/html/apps -v config-owncloud:/var/www/html/config -v data-owncloud:/var/www/html/data --network external -p 80:80  myowncloud:latest
+docker run -d --name myinfluxv2 -p 8086:8086 --network external -v influxdb2-data:/var/lib/influxdb2  -v influxdb2-config:/etc/influxdb2 -v connection_info:/connection_info myinflu
+docker run -d --name=grafana -p 3000:3000 --network external -v connection_info:/connection_info -e GF_LOG_MODE=file mygrafana:latest
+docker  run -d --privileged  --name mytelegraf --network external  -p 8125:8125 -v /var/run/docker.sock:/var/run/docker.sock -v connection_info:/connection_info mytelegraf:latest

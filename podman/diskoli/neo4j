@@ -1,0 +1,171 @@
+[
+    {
+        "Id": "9f918ac4edae11e42ce7876226b2a8bc4840d475b0f81be6dfb17399c3aa0ef0",
+        "Digest": "sha256:e559d4000b000c05b10110e0b0356bac6779538efebbfe9aa6af4823e8dc0eca",
+        "RepoTags": [
+            "docker.io/library/neo4j:latest"
+        ],
+        "RepoDigests": [
+            "docker.io/library/neo4j@sha256:7bc039198d8f0eeb38f30d738a9deef1fed698438ff98451e308b5114aa3dbe1",
+            "docker.io/library/neo4j@sha256:e559d4000b000c05b10110e0b0356bac6779538efebbfe9aa6af4823e8dc0eca"
+        ],
+        "Parent": "",
+        "Comment": "",
+        "Created": "2024-07-23T13:55:16Z",
+        "Config": {
+            "ExposedPorts": {
+                "7473/tcp": {},
+                "7474/tcp": {},
+                "7687/tcp": {}
+            },
+            "Env": [
+                "PATH=/var/lib/neo4j/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "JAVA_HOME=/opt/java/openjdk",
+                "NEO4J_SHA256=80ae623641a3b353e3b2bca5e49cb6f0dbb79d89d512850c751c356a1378c444",
+                "NEO4J_TARBALL=neo4j-community-5.22.0-unix.tar.gz",
+                "NEO4J_EDITION=community",
+                "NEO4J_HOME=/var/lib/neo4j",
+                "LANG=C.UTF-8"
+            ],
+            "Entrypoint": [
+                "tini",
+                "-g",
+                "--",
+                "/startup/docker-entrypoint.sh"
+            ],
+            "Cmd": [
+                "neo4j"
+            ],
+            "Volumes": {
+                "/data": {},
+                "/logs": {}
+            },
+            "WorkingDir": "/var/lib/neo4j"
+        },
+        "Version": "",
+        "Author": "",
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 510712026,
+        "VirtualSize": 510712026,
+        "GraphDriver": {
+            "Name": "overlay",
+            "Data": {
+                "LowerDir": "/home/geo/.local/share/containers/storage/overlay/2fb09c613eeabcb73834cb416ba09dfe70af0ce383794f4f4ae7143f9fb92e0e/diff:/home/geo/.local/share/containers/storage/overlay/6038645fbf705e572525a42e670b3ff266899ebebe5548b98b1c9b593163566f/diff:/home/geo/.local/share/containers/storage/overlay/af96fa039fd9259bf970b578a8967b927618627d967b7bdcf00b93467a371787/diff:/home/geo/.local/share/containers/storage/overlay/00d63e0b57fe0edb983af7ce97f164e25962fa56fbb5aa43b2beb0d284b4c2a4/diff:/home/geo/.local/share/containers/storage/overlay/6f697f52d48595d9c5c3104e2ed3d8e617cb437b485e7396ad5f00726125e52b/diff",
+                "UpperDir": "/home/geo/.local/share/containers/storage/overlay/983463910584a86d50b985b38c68ed3881e1d666cdca36538b1526a735c9079a/diff",
+                "WorkDir": "/home/geo/.local/share/containers/storage/overlay/983463910584a86d50b985b38c68ed3881e1d666cdca36538b1526a735c9079a/work"
+            }
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:6f697f52d48595d9c5c3104e2ed3d8e617cb437b485e7396ad5f00726125e52b",
+                "sha256:1172bfa81c81e4b2fb426ef454d9e0b42f183a62ca1687980a3a23212b955f74",
+                "sha256:e65b702b7dbd132012471643e416f97f39fc4ef3e5340fa1621a0ae60d1667f6",
+                "sha256:d8f0de23a458caa0c4f913bd4ed43fa6d5aaad9841bc8e2b126e249f13a77e59",
+                "sha256:9ed7d8ce233d202b05432fe0570e80460a453734fa76d55db74554c57c06efd7",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Labels": null,
+        "Annotations": {
+            "com.docker.official-images.bashbrew.arch": "amd64",
+            "org.opencontainers.image.base.digest": "sha256:482aabdceb859cc9ddc2e36867ac1ff6d3477bffcd05cac015bfc442c334aff4",
+            "org.opencontainers.image.base.name": "debian:bullseye-slim",
+            "org.opencontainers.image.created": "2024-07-23T13:55:16Z",
+            "org.opencontainers.image.revision": "865c130fa68c9fe5ce60d35351d3fafad6da6b4b",
+            "org.opencontainers.image.source": "https://github.com/neo4j/docker-neo4j-publish.git#865c130fa68c9fe5ce60d35351d3fafad6da6b4b:5.22.0/bullseye/community",
+            "org.opencontainers.image.url": "https://hub.docker.com/_/neo4j",
+            "org.opencontainers.image.version": "5.22.0-community-bullseye"
+        },
+        "ManifestType": "application/vnd.oci.image.manifest.v1+json",
+        "User": "",
+        "History": [
+            {
+                "created": "2024-07-23T05:24:37.7839332Z",
+                "created_by": "/bin/sh -c #(nop) ADD file:258da966e49fd81eb3befac4ebcc023feb92794e891d5c9ca9b61084c7a209d5 in / "
+            },
+            {
+                "created": "2024-07-23T05:24:38.098531622Z",
+                "created_by": "/bin/sh -c #(nop)  CMD [\"bash\"]",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "ENV JAVA_HOME=/opt/java/openjdk",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "COPY /opt/java/openjdk /opt/java/openjdk # buildkit",
+                "comment": "buildkit.dockerfile.v0"
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "ENV PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin NEO4J_SHA256=80ae623641a3b353e3b2bca5e49cb6f0dbb79d89d512850c751c356a1378c444 NEO4J_TARBALL=neo4j-community-5.22.0-unix.tar.gz NEO4J_EDITION=community NEO4J_HOME=/var/lib/neo4j LANG=C.UTF-8",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "ARG NEO4J_URI=https://dist.neo4j.org/neo4j-community-5.22.0-unix.tar.gz",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "RUN |1 NEO4J_URI=https://dist.neo4j.org/neo4j-community-5.22.0-unix.tar.gz /bin/sh -c addgroup --gid 7474 --system neo4j \u0026\u0026 adduser --uid 7474 --system --no-create-home --home \"${NEO4J_HOME}\" --ingroup neo4j neo4j # buildkit",
+                "comment": "buildkit.dockerfile.v0"
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "COPY ./local-package/* /startup/ # buildkit",
+                "comment": "buildkit.dockerfile.v0"
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "RUN |1 NEO4J_URI=https://dist.neo4j.org/neo4j-community-5.22.0-unix.tar.gz /bin/sh -c apt update     \u0026\u0026 apt-get install -y curl gcc git jq make procps tini wget     \u0026\u0026 curl --fail --silent --show-error --location --remote-name ${NEO4J_URI}     \u0026\u0026 echo \"${NEO4J_SHA256}  ${NEO4J_TARBALL}\" | sha256sum -c --strict --quiet     \u0026\u0026 tar --extract --file ${NEO4J_TARBALL} --directory /var/lib     \u0026\u0026 mv /var/lib/neo4j-* \"${NEO4J_HOME}\"     \u0026\u0026 rm ${NEO4J_TARBALL}     \u0026\u0026 sed -i 's/Package Type:.*/Package Type: docker bullseye/' $NEO4J_HOME/packaging_info     \u0026\u0026 mv /startup/neo4j-admin-report.sh \"${NEO4J_HOME}\"/bin/neo4j-admin-report     \u0026\u0026 mv \"${NEO4J_HOME}\"/data /data     \u0026\u0026 mv \"${NEO4J_HOME}\"/logs /logs     \u0026\u0026 chown -R neo4j:neo4j /data     \u0026\u0026 chmod -R 777 /data     \u0026\u0026 chown -R neo4j:neo4j /logs     \u0026\u0026 chmod -R 777 /logs     \u0026\u0026 chown -R neo4j:neo4j \"${NEO4J_HOME}\"     \u0026\u0026 chmod -R 777 \"${NEO4J_HOME}\"     \u0026\u0026 chmod -R 755 \"${NEO4J_HOME}/bin\"     \u0026\u0026 ln -s /data \"${NEO4J_HOME}\"/data     \u0026\u0026 ln -s /logs \"${NEO4J_HOME}\"/logs     \u0026\u0026 git clone https://github.com/ncopa/su-exec.git     \u0026\u0026 cd su-exec     \u0026\u0026 git checkout 4c3bb42b093f14da70d8ab924b487ccfbb1397af     \u0026\u0026 echo d6c40440609a23483f12eb6295b5191e94baf08298a856bab6e15b10c3b82891 su-exec.c | sha256sum -c     \u0026\u0026 echo 2a87af245eb125aca9305a0b1025525ac80825590800f047419dc57bba36b334 Makefile | sha256sum -c     \u0026\u0026 make     \u0026\u0026 mv /su-exec/su-exec /usr/bin/su-exec     \u0026\u0026 apt-get -y purge --auto-remove curl gcc git make     \u0026\u0026 rm -rf /var/lib/apt/lists/* /su-exec # buildkit",
+                "comment": "buildkit.dockerfile.v0"
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "ENV PATH=/var/lib/neo4j/bin:/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "WORKDIR /var/lib/neo4j",
+                "comment": "buildkit.dockerfile.v0"
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "VOLUME [/data /logs]",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "EXPOSE map[7473/tcp:{} 7474/tcp:{} 7687/tcp:{}]",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "ENTRYPOINT [\"tini\" \"-g\" \"--\" \"/startup/docker-entrypoint.sh\"]",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            },
+            {
+                "created": "2024-07-23T13:55:16Z",
+                "created_by": "CMD [\"neo4j\"]",
+                "comment": "buildkit.dockerfile.v0",
+                "empty_layer": true
+            }
+        ],
+        "NamesHistory": [
+            "docker.io/library/neo4j:latest"
+        ]
+    }
+]

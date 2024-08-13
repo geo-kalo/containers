@@ -1,0 +1,24 @@
+
+FROM docker.io/library/ubuntu
+run apt update -y && apt-get upgrade -y && apt install vim openvpn net-tools procps tcpdump inetutils-ping  iproute2 inetutils-ping  wget curl nano software-properties-common dirmngr apt-transport-https gnupg gnupg2 ca-certificates lsb-release unzip -y && curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | gpg --dearmor -o /usr/share/keyrings/neo4j.gpg && echo "deb [signed-by=/usr/share/keyrings/neo4j.gpg] https://debian.neo4j.com stable latest" | tee -a /etc/apt/sources.list.d/neo4j.list && apt-get update -y && apt-get install neo4j -y
+
+run apt update -y && apt install python3-full  python3-pip python3-venv virtualenv apache2 libapache2-mod-wsgi-py3  curl -y && apt install net-tools -y && apt install vim procps inetutils-ping -y 
+
+
+copy activate_virtual_env.sh /tmp
+copy packets /tmp
+copy neo4j-mongodb-flask-apache.conf /etc/apache2/sites-enabled/
+
+run mkdir /venv && chmod u+x /tmp/activate_virtual_env.sh && /tmp/activate_virtual_env.sh && mkdir -p /var/www/neo4jflask/doc/ && rm -f /etc/apache2/sites-enabled/000-default.conf
+
+copy main.py /var/www/neo4jflask/doc/
+#run /etc/init.d/apache2 start  
+
+ 
+copy flask-entrypoint.sh /tmp
+
+
+entrypoint sh /tmp/flask-entrypoint.sh
+
+
+

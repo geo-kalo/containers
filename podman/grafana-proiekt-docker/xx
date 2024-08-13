@@ -1,0 +1,371 @@
+[
+    {
+        "Id": "be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf",
+        "Created": "2024-08-10T20:44:05.46366201+03:00",
+        "Path": "/bin/sh",
+        "Args": [
+            "-c",
+            "/influxd-entrypoint.sh"
+        ],
+        "State": {
+            "OciVersion": "1.0.2-dev",
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 681214,
+            "ConmonPid": 681211,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2024-08-10T20:44:05.930001672+03:00",
+            "FinishedAt": "0001-01-01T00:00:00Z",
+            "Healthcheck": {
+                "Status": "",
+                "FailingStreak": 0,
+                "Log": null
+            },
+            "CgroupPath": "/user.slice/user-1000.slice/user@1000.service/user.slice/libpod-be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf.scope"
+        },
+        "Image": "d34fea695e137abf964898112eb971527bb5f13e227cdf075e54b4af42803f80",
+        "ImageName": "localhost/myinfluxv2:latest",
+        "Rootfs": "",
+        "Pod": "",
+        "ResolvConfPath": "/run/user/1000/containers/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata/resolv.conf",
+        "HostnamePath": "/run/user/1000/containers/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata/hostname",
+        "HostsPath": "/run/user/1000/containers/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata/hosts",
+        "StaticDir": "/home/geo/.local/share/containers/storage/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata",
+        "OCIConfigPath": "/home/geo/.local/share/containers/storage/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata/config.json",
+        "OCIRuntime": "crun",
+        "ConmonPidFile": "/run/user/1000/containers/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata/conmon.pid",
+        "PidFile": "/run/user/1000/containers/overlay-containers/be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf/userdata/pidfile",
+        "Name": "myinfluxv2",
+        "RestartCount": 0,
+        "Driver": "overlay",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "EffectiveCaps": [
+            "CAP_CHOWN",
+            "CAP_DAC_OVERRIDE",
+            "CAP_FOWNER",
+            "CAP_FSETID",
+            "CAP_KILL",
+            "CAP_NET_BIND_SERVICE",
+            "CAP_SETFCAP",
+            "CAP_SETGID",
+            "CAP_SETPCAP",
+            "CAP_SETUID",
+            "CAP_SYS_CHROOT"
+        ],
+        "BoundingCaps": [
+            "CAP_CHOWN",
+            "CAP_DAC_OVERRIDE",
+            "CAP_FOWNER",
+            "CAP_FSETID",
+            "CAP_KILL",
+            "CAP_NET_BIND_SERVICE",
+            "CAP_SETFCAP",
+            "CAP_SETGID",
+            "CAP_SETPCAP",
+            "CAP_SETUID",
+            "CAP_SYS_CHROOT"
+        ],
+        "ExecIDs": [],
+        "GraphDriver": {
+            "Name": "overlay",
+            "Data": {
+                "LowerDir": "/home/geo/.local/share/containers/storage/overlay/29c88a51358cb5637cf7ec4789a5902f4079889e36afd468f7712f9440b21efc/diff:/home/geo/.local/share/containers/storage/overlay/65afb79bb097d9248b51a6962e06158bf08e18877c116986b393a72f3553f432/diff:/home/geo/.local/share/containers/storage/overlay/424e2701999ed1af6300e8206718095c827d0e36fc28981bebcd7adf3c7a9713/diff:/home/geo/.local/share/containers/storage/overlay/dede85a65cc8a9330b9d600b0dbf9c6785da4bceea6e611a463c4e3ffd08591c/diff:/home/geo/.local/share/containers/storage/overlay/86d6525d39ff0cd41889b7b6130ed69da8db27d4422be5d9aa1e53f60c34292c/diff:/home/geo/.local/share/containers/storage/overlay/cd975ca4a26a58600f21c3699cdc83c169cb68cdd3728b6bd66179d761dc8542/diff:/home/geo/.local/share/containers/storage/overlay/80d53db4d1280806f285bc4f38b59ea8082ba78a62fccc84e25aade82a77dc92/diff:/home/geo/.local/share/containers/storage/overlay/fd4eebcb23e4004646246ec9efe1980d8dcaf75f7f83ef62a82e2d709202d073/diff:/home/geo/.local/share/containers/storage/overlay/594812b14630b2ff049445435cad5bbe4feda7a38e925514fdc532116c50fee8/diff:/home/geo/.local/share/containers/storage/overlay/0d81d328269e644bbc775af390b76a4bcbeb5049386dede0dc87f6ff96ff2b37/diff:/home/geo/.local/share/containers/storage/overlay/d8f313fadd75f4f7d611f21f2279c49c0681ddc049650db9a1270963348b505d/diff:/home/geo/.local/share/containers/storage/overlay/e0781bc8667fb5ebf954df4ae52997f6f5568ec9f07e21e5db7c9d324ed41e1f/diff",
+                "MergedDir": "/home/geo/.local/share/containers/storage/overlay/9204e6c78f0e90c2d3c38548a663955e5417c7dc206b6fe42f361a73acce2b40/merged",
+                "UpperDir": "/home/geo/.local/share/containers/storage/overlay/9204e6c78f0e90c2d3c38548a663955e5417c7dc206b6fe42f361a73acce2b40/diff",
+                "WorkDir": "/home/geo/.local/share/containers/storage/overlay/9204e6c78f0e90c2d3c38548a663955e5417c7dc206b6fe42f361a73acce2b40/work"
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "influxdb2-config",
+                "Source": "/home/geo/.local/share/containers/storage/volumes/influxdb2-config/_data",
+                "Destination": "/etc/influxdb2",
+                "Driver": "local",
+                "Mode": "",
+                "Options": [
+                    "nosuid",
+                    "nodev",
+                    "rbind"
+                ],
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "volume",
+                "Name": "influxdb2-data",
+                "Source": "/home/geo/.local/share/containers/storage/volumes/influxdb2-data/_data",
+                "Destination": "/var/lib/influxdb2",
+                "Driver": "local",
+                "Mode": "",
+                "Options": [
+                    "nosuid",
+                    "nodev",
+                    "rbind"
+                ],
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "volume",
+                "Name": "connection_info",
+                "Source": "/home/geo/.local/share/containers/storage/volumes/connection_info/_data",
+                "Destination": "/connection_info",
+                "Driver": "local",
+                "Mode": "",
+                "Options": [
+                    "nosuid",
+                    "nodev",
+                    "rbind"
+                ],
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Dependencies": [],
+        "NetworkSettings": {
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "MacAddress": "",
+            "Bridge": "",
+            "SandboxID": "",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {
+                "8086/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8086"
+                    }
+                ]
+            },
+            "SandboxKey": "/run/user/1000/netns/cni-36834554-0611-a168-e4cd-02a13cb49475",
+            "Networks": {
+                "external": {
+                    "EndpointID": "",
+                    "Gateway": "10.89.1.1",
+                    "IPAddress": "10.89.1.46",
+                    "IPPrefixLen": 24,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "22:29:14:74:67:d0",
+                    "NetworkID": "external",
+                    "DriverOpts": null,
+                    "IPAMConfig": null,
+                    "Links": null
+                }
+            }
+        },
+        "ExitCommand": [
+            "/usr/bin/podman",
+            "--root",
+            "/home/geo/.local/share/containers/storage",
+            "--runroot",
+            "/run/user/1000/containers",
+            "--log-level",
+            "warning",
+            "--cgroup-manager",
+            "systemd",
+            "--tmpdir",
+            "/run/user/1000/libpod/tmp",
+            "--runtime",
+            "crun",
+            "--storage-driver",
+            "overlay",
+            "--events-backend",
+            "journald",
+            "container",
+            "cleanup",
+            "be26bee0eda361d818bc93b6b512319f6cad0d8e3307d53a110898f0adc8d0bf"
+        ],
+        "Namespace": "",
+        "IsInfra": false,
+        "Config": {
+            "Hostname": "be26bee0eda3",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "TERM=xterm",
+                "container=podman",
+                "DOCKER_INFLUXDB_INIT_ORG=kalogeropoulos_org",
+                "DOCKER_INFLUXDB_INIT_USERNAME=myadmin",
+                "INFLUXDB_VERSION=2.7.9",
+                "GOSU_VER=1.16",
+                "DOCKER_INFLUXDB_INIT_BUCKET=grafana",
+                "INFLUXD_INIT_PORT=9999",
+                "DOCKER_INFLUXDB_INIT_CLI_CONFIG_NAME=default",
+                "INFLUX_CLI_VERSION=2.7.3",
+                "INFLUXD_INIT_PING_ATTEMPTS=600",
+                "INFLUX_CONFIGS_PATH=/etc/influxdb2/influx-configs",
+                "DOCKER_INFLUXDB_INIT_MODE=setup",
+                "DOCKER_INFLUXDB_INIT_PASSWORD=h3rcul3s!",
+                "HOME=/root",
+                "HOSTNAME=be26bee0eda3"
+            ],
+            "Cmd": null,
+            "Image": "localhost/myinfluxv2:latest",
+            "Volumes": null,
+            "WorkingDir": "/",
+            "Entrypoint": "/bin/sh -c /influxd-entrypoint.sh",
+            "OnBuild": null,
+            "Labels": {
+                "io.buildah.version": "1.23.1"
+            },
+            "Annotations": {
+                "com.docker.official-images.bashbrew.arch": "amd64",
+                "io.container.manager": "libpod",
+                "io.kubernetes.cri-o.Created": "2024-08-10T20:44:05.46366201+03:00",
+                "io.kubernetes.cri-o.TTY": "false",
+                "io.podman.annotations.autoremove": "FALSE",
+                "io.podman.annotations.init": "FALSE",
+                "io.podman.annotations.privileged": "FALSE",
+                "io.podman.annotations.publish-all": "FALSE",
+                "org.opencontainers.image.base.digest": "sha256:16112ae93b810eb1ec6d1db6e01835d2444c8ca99aa678e03dd104ea3ec68408",
+                "org.opencontainers.image.base.name": "debian:bookworm-slim",
+                "org.opencontainers.image.created": "2024-08-09T17:32:24Z",
+                "org.opencontainers.image.revision": "de7128682e0380c94aaed70c804f643bb85855bb",
+                "org.opencontainers.image.source": "https://github.com/influxdata/influxdata-docker.git#de7128682e0380c94aaed70c804f643bb85855bb:influxdb/2.7",
+                "org.opencontainers.image.stopSignal": "15",
+                "org.opencontainers.image.url": "https://hub.docker.com/_/influxdb",
+                "org.opencontainers.image.version": "2"
+            },
+            "StopSignal": 15,
+            "CreateCommand": [
+                "podman",
+                "run",
+                "-d",
+                "--name",
+                "myinfluxv2",
+                "-p",
+                "8086:8086",
+                "--network",
+                "external",
+                "-v",
+                "influxdb2-data:/var/lib/influxdb2",
+                "-v",
+                "influxdb2-config:/etc/influxdb2",
+                "-v",
+                "connection_info:/connection_info",
+                "myinfluxv2"
+            ],
+            "Umask": "0022",
+            "Timeout": 0,
+            "StopTimeout": 10
+        },
+        "HostConfig": {
+            "Binds": [
+                "influxdb2-config:/etc/influxdb2:rw,rprivate,nosuid,nodev,rbind",
+                "influxdb2-data:/var/lib/influxdb2:rw,rprivate,nosuid,nodev,rbind",
+                "connection_info:/connection_info:rw,rprivate,nosuid,nodev,rbind"
+            ],
+            "CgroupManager": "systemd",
+            "CgroupMode": "private",
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "journald",
+                "Config": null,
+                "Path": "",
+                "Tag": "",
+                "Size": "0B"
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "8086/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8086"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "CapAdd": [],
+            "CapDrop": [
+                "CAP_AUDIT_WRITE",
+                "CAP_MKNOD",
+                "CAP_NET_RAW"
+            ],
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": [],
+            "GroupAdd": [],
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Cgroups": "default",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "private",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": [],
+            "Tmpfs": {},
+            "UTSMode": "private",
+            "UsernsMode": "",
+            "ShmSize": 65536000,
+            "Runtime": "oci",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "user.slice",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": null,
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DiskQuota": 0,
+            "KernelMemory": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": 0,
+            "OomKillDisable": false,
+            "PidsLimit": 2048,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "CgroupConf": null
+        }
+    }
+]

@@ -1,0 +1,25 @@
+FROM docker.io/library/ubuntu
+user root
+run apt update -y && apt install  postgresql-client  procps inetutils-ping iproute2 iptables openvpn easy-rsa python3-full  python3-pip python3-venv virtualenv apache2 libapache2-mod-wsgi-py3  curl -y && apt install net-tools -y && apt install vim -y && make-cadir /etc/openvpn/easy-rsa
+#run pip install fastapi a2wsgi && pip install psycopg2-binary && pip install sqlmodel
+run apt install -y virtualenv 
+run mkdir /etc/openvpn/ccd 
+copy openvpn-server.sh .
+copy server.conf /etc/openvpn/openvpn.conf
+copy myclient1 /etc/openvpn/ccd/ 
+copy myclient2 /etc/openvpn/ccd/
+copy myclient3 /etc/openvpn/ccd/
+volume /mykeys
+workdir /etc/openvpn/
+run openvpn --genkey --secret ta.key
+#run iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+workdir /
+copy activate_virtual_env.sh .
+copy packets .
+copy main.py .
+copy virtual-fastapi.conf /etc/apache2/sites-enabled/
+run mkdir /venv && chmod u+x /activate_virtual_env.sh
+
+
+entrypoint sh openvpn-server.sh
+

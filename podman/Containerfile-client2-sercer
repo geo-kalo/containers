@@ -1,0 +1,8 @@
+FROM docker.io/library/postgres
+run apt update -y && apt install vim openvpn net-tools procps tcpdump inetutils-ping  iproute2 inetutils-ping -y
+#run route add -host 192.168.13.13 dev eth1
+workdir /mykeys
+entrypoint openvpn --config client2.conf
+#entrypoint tail -f /dev/null
+
+

@@ -1,0 +1,28 @@
+#ifrom docker.io/library/python
+#run pip install jinja2 && mkdir -p /workdir/templates
+
+
+from 	grafana/grafana
+user	root
+
+
+env	GF_SECURITY_ADMIN_USER=admin \
+        GF_SECURITY_ADMIN_PASSWORD=12345678 \
+        GF_LOG_MODE=file 
+
+
+run mkdir /connection_info && mkdir -p /workdir/templates && mkdir -p /workdir/renders && touch /workdir/renders/grafana-provision-v2.yaml \
+	  && apk update && apk add python3 && \
+          mkdir /venv
+
+volume	  /connection_info
+
+copy	  activate_virtual_env.sh /
+run 	  chmod u+x /activate_virtual_env.sh
+copy      test.py /workdir/file_generator.py
+copy	  grafana-provision-v2.jinja /workdir/templates
+copy      grafana_entrypoint.sh /
+#copy      grafana.ini /etc/grafana/grafana.ini
+run       chmod u+x /grafana_entrypoint.sh
+
+entrypoint	/grafana_entrypoint.sh

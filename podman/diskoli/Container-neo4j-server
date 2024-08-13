@@ -1,0 +1,8 @@
+from 	docker.io/library/neo4j
+run apt update -y && apt-get upgrade -y && apt install vim openvpn net-tools procps tcpdump inetutils-ping  iproute2 inetutils-ping  wget curl nano software-properties-common dirmngr apt-transport-https gnupg gnupg2 ca-certificates lsb-release unzip -y && curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | gpg --dearmor -o /usr/share/keyrings/neo4j.gpg && echo "deb [signed-by=/usr/share/keyrings/neo4j.gpg] https://debian.neo4j.com stable latest" | tee -a /etc/apt/sources.list.d/neo4j.list && apt-get update -y && apt-get install neo4j -y
+
+volume	neo4j:/var/lib/neo4j
+copy neo4j-server-entrypoint.sh /
+copy neo4j.conf /etc/neo4j/neo4j.conf
+
+entrypoint sh /neo4j-server-entrypoint.sh

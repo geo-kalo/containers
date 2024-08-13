@@ -1,0 +1,295 @@
+podman run -d --name openvpn -p 1194:1194/udp -p 943:943 -p 443:443 --network internal,external  --device=/dev/net/tun  --cap-add=NET_ADMIN -v openvpdata:/mykeys localhost/mycustom 
+podman run -d --name openvpn -p 1194:1194/udp -p 943:943 -p 443:443 --network internal,external  --device=/dev/net/tun  --privileged -v openvpdata:/mykeys localhost/mycustom 
+
+
+podman run -d --name postgres --network internal,external --device=/dev/net/tun  --cap-add=NET_ADMIN -e POSTGRES_PASSWORD=666 -e POSTGRES_USER=admin -e POSTGRES_DB=mytestdb -v  openvpdata:/mykeys postgres
+podman run -d --name postgres --network internal,external --device=/dev/net/tun  --privileged -e POSTGRES_PASSWORD=666 -e POSTGRES_USER=admin -e POSTGRES_DB=mytestdb -v  openvpdata:/mykeys localhost/mypostgres
+
+podman run -d --name client2 --network internal,external --device=/dev/net/tun  --cap-add=NET_ADMIN  -v  openvpdata:/mykeys ubuntu tail -f /dev/mull
+podman run -d --name client2 --network internal,external --device=/dev/net/tun  --privileged  -v  openvpdata:/mykeys localhost/myclient2 
+
+
+
+
+podman run -d --name client2 --network internal,external --device=/dev/net/tun  --privileged  -v  openvpdata:/mykeys ubuntu 
+
+
+
+
+apt install -y  inetutils-ping 
+apt update -y 
+apt install vim openvpn net-tools procps tcpdump inetutils-ping  iproute2 inetutils-ping -y
+
+
+
+ route add -host 10.0.1.3 dev eth0
+ 
+ # for i in /proc/sys/net/ipv4/conf/*/rp_filter ; do
+>  echo 2 > $i 
+> done
+
+
+
+
+
+
+
+
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
+
+
+
+
+podman build -t mycustom -f Containerfile-vpn-server
+
+podman build -t mypostgres -f Containerfile-psql-server
+
+podman build -t myclient2 -f Containerfile-client2-sercer
+
+
+
+sudo sysctl -w 'net.ipv4.ip_unprivileged_port_start=943'
+sudo sysctl -w 'net.ipv4.ip_unprivileged_port_start=443'
+
+
+
+/usr/lib/postgresql/16/bin/initdb
+
+
+
+
+podman run -d --name openvpn -p 1194:1194/udp -p 943:943 -p 443:443 -p 8000:8000 -p 80:80 --network internal --ip 192.168.14.10  --device=/dev/net/tun  --privileged -v openvpdata:/mykeys localhost/mycustom
+podman network connect external openvpn
+
+
+
+
+podman run -d --name postgres --network internal --ip 192.168.14.20 --device=/dev/net/tun  --privileged -e POSTGRES_PASSWORD=666 -e POSTGRES_USER=admin -e POSTGRES_DB=mytestdb -v  openvpdata:/mykeys  -v database:/var/lib/postgresql/data localhost/mypostgres
+podman network connect external postgres
+
+
+
+
+
+
+
+
+podman run -d --name client2 --network internal --ip 192.168.14.30 --device=/dev/net/tun  --privileged  -v  openvpdata:/mykeys localhost/myclient2 
+podman network connect external client2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#!/usr/bin/env python3
+
+from fastapi import FastAPI
+from a2wsgi import ASGIMiddleware
+from sqlmodel import SQLModel, Field, create_engine, Session, select
+from typing import Optional
+
+dburl = "postgresql://postgres:postgres123@database/heat"
+engine = create_engine(dburl)
+app = FastAPI()
+
+
+class heat_help(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    surname: str
+    month_income: int
+    heat_kind: str
+    heat_ammount_lt: int
+    heat_cost: int
+    supported_ammount: int = Field(default=None)
+
+SQLModel.metadata.create_all(engine)
+
+
+def fund_cacl(income, heatcost):
+    inc = float(income)
+    cost = float(heatcost)
+    if inc >= 1800:
+        supp=0
+    elif inc > 1500:
+        supp=float(cost*0.10)
+    elif inc >= 1200:
+        supp= float(cost*0.15)
+    elif inc >= 1000:
+        supp= float(cost*0.20)
+    elif inc >= 800:
+        supp= float(cost*0.25)
+    elif inc >= 700:
+        supp= float(cost*0.30)
+    elif inc >= 600:
+        supp= float(cost*0.35)
+    elif inc >= 500:
+        supp= float(cost*0.40)
+    else:
+        supp= float(cost*0.50)
+    return supp
+
+@app.get("/heataccounts")
+def get_users():
+    with Session(engine) as session:
+        heat_users = session.exec(select(heat_help)).all()
+        return heat_users
+
+
+
+@app.get("/heatfund/{uid}")
+def get_user(uid: int):
+    with Session(engine) as session:
+        heat_user = session.get(heat_help,uid)
+        if not heat_user:
+            raise HTTPException(status_code=404, detail="Account not found")
+        return heat_user
+
+
+@app.post("/heatfund")
+def post_user(user: heat_help):
+    inc = user.month_income
+    cost = user.heat_cost
+    user.supported_ammount = fund_cacl(user.month_income,user.heat_cost)
+    msg = 'Supported amount is '+str(user.supported_ammount)
+    with Session(engine) as session:
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+    return msg
+
+
+application = ASGIMiddleware(app)
+
+
+
+
+
+
+
+
+a2enmod ssl
+/etc/init.d/apache2 restart 
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache.key -out /etc/ssl/certs/apache.crt
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509  -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.fastapi.com" -keyout /etc/ssl/private/apache.key -out /etc/ssl/certs/apache.crt
+
+
+<VirtualHost *:80>
+    ServerName www.heathelp.com
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    #WSGI APP   
+    WSGIDaemonProcess heatapp python-home=/var/www/html/.venv
+    WSGIProcessGroup heatapp
+    WSGIScriptAlias / /var/www/html/heat_main.py
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+
+
+
+
+
+
+> apt install postgresql-client-13
+ 
+> bashrc env
+export PGUSER="postgres"
+export PGPASSWORD="postgres123"
+export PGDATABASE="heat"
+export PGHOSTADDR="0"
+ 
+###WSGI
+ python -m venv /root/sysadmin/sysenv
+ source sysenv/bin/activate
+ pip install fastapi a2wsgi
+ pip install psycopg2-binary
+ pip install sqlmodel
+ 
+###WSGI apache
+ apt install apache2 -y 
+ apt install libapache2-mod-wsgi-py3 -y 
+
+
+ apt-get -y install python3-pip
+ apt-get -y install python3-venv
+ apt install -y apache2 curl
+
+
+
+https://github.com/fnep/example_fastapi_behind_apache_using_wsgi/blob/main/main.py
+https://medium.com/@wrefordmessi/fastapi-deployment-on-ubuntu-server-f4f94b9f8cc8
+https://stackoverflow.com/questions/43582257/shell-script-to-set-up-virtualenv-and-pip
+https://makwanadhruv.medium.com/automating-virtual-environments-bash-script-magic-for-python-developers-3a06df1777a6
+
+
+root@1b09ecc899b2:/# cat activate_virtual_env.sh 
+#!/bin/bash
+create_venv() {
+
+    python3 -m venv /venv
+    source /venv/bin/activate
+    pip install -U pip
+    pip install -r packets
+}
+
+create_venv
+
+
+
+
+apt update -y 
+apt install python3-venv python3-pip python3-full virtualenv -y
+
+mkdir /venv
+python3 -m venv /venv
+source /venv/bin/activate
+pip install fastapi a2wsgi
+
+
+curl -X POST "http://127.0.0.1:8000/items/" -H "Content-Type: application/json" -d '{"name": "Sample Item", "description": "This is a sample item"}'
+curl -X "POST" "http://127.0.0.1:8000/addentries/ " -H "accept: application/json" -H '{"code": "666", "description": "xino"}'
+
+curl -X POST "http://www.fastapi.gr/addentries/" -H "Content-Type: application/json" -d '{"code": 2000, "name": "ffffff"}' ; echo;
+curl -k -X POST "https://www.fastapi.gr/addentries/" -H "Content-Type: application/json" -d '{"code": 2000, "name": "ffffff"}' ; echo;
+
+curl -k https://10.0.47.59/getdata/testfastapi; echo ;
+curl -k -X POST "https://10.0.47.59/addentries/" -H "Content-Type: application/json" -d '{"code": 9999, "name": "ffffff"}' ; echo;
+curl -k -X POST "https://10.0.47.59/deletentries/" -H "Content-Type: application/json" -d '{"code": 9999, "name": "ffffff"}' ; echo;
+
+
+
+
+
+curl -X POST "http://127.0.0.1:8000/addentries/" -H "Content-Type: application/json" -d '{667, "xino"}' ; echo
+
+
+sudo sysctl -w 'net.ipv4.ip_unprivileged_port_start=943'
+
+
+
+Then, this shows all tables in the current schema:
+
+\dt

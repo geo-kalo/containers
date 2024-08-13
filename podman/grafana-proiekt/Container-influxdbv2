@@ -1,0 +1,26 @@
+FROM	docker.io/library/influxdb:2
+
+
+copy 	influxd-entrypoint.sh /
+#run 	mkdir /connection_info && influx auth create --org kalogeropoulos_org  --all-access && influx  org list  | awk '{print $1}' | grep -v ID > org && influx auth create --org kalogeropoulos_org  --all-access  > test  && cat test | awk '{print $2}' | grep -v Description > token
+
+run     mkdir /connection_info && chmod u+x /influxd-entrypoint.sh
+
+
+volume	/var/lib/influxdb2
+volume  /etc/influxdb2
+volume  /connection_info
+
+expose	8086
+
+ENV	DOCKER_INFLUXDB_INIT_MODE=setup \
+	DOCKER_INFLUXDB_INIT_USERNAME=myadmin \
+	DOCKER_INFLUXDB_INIT_PASSWORD=h3rcul3s! \
+	DOCKER_INFLUXDB_INIT_ORG=kalogeropoulos_org \
+	DOCKER_INFLUXDB_INIT_BUCKET=grafana
+
+
+entrypoint	/influxd-entrypoint.sh
+#entrypoint	/entrypoint.sh
+#cmd		influxd
+	

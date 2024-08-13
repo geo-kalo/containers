@@ -1,0 +1,4 @@
+fastapi
+a2wsgi
+psycopg2-binary
+sqlmodel
