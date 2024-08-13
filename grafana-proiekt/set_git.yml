@@ -3,131 +3,132 @@
   hosts: servers
   gather_facts: yes
   vars:
-          ansible_python_interpreter: /usr/bin/python3
+    ansible_python_interpreter: /usr/bin/python3
+    repo_url: git@github.com:geo-kalo/containers.git
+    repo_dest: /tmp/qq  # Update this to your desired path
   tasks:
-          - name: Build myowncloud image
-            docker_image:
-                    build:
-                        path: ./owndockerfile
-                    name: "myowncloud:latest"
-                    source: build
-                    tag: latest
-                    push: no
+    - name: Clone the Git repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dest }}"
+        version: main
+        clone: yes
+        update: yes
+        accept_hostkey: yes  # Optional, to auto-accept host key
 
-          - name: Build myinflux image
-            docker_image:
-                    build: 
-                        path: ./influxdockerfile
-                    name: "myinflux:latest"
-                    source: build
-                    push: no
-                    tag: latest 
+    - name: Build myowncloud image
+      docker_image:
+        build:
+                path: "{{ repo_dest }}/grafana-proiekt/owndockerfile"
+        name: "myowncloud:latest"
+        source: build
+        tag: latest
+        push: no
 
-          - name: Build mytelegraf image
-            docker_image:
-                    build: 
-                        path: ./telegrafdockerfile
-                    name: "mytelegraf:latest"
-                    source: build
-                    tag: latest
-                    push: no
+    - name: Build myinflux image
+      docker_image:
+        build: 
+          path: "{{ repo_dest }}/grafana-proiekt/influxdockerfile"
+        name: "myinflux:latest"
+        source: build
+        tag: latest
+        push: no
 
-          - name: Build mygrafana image
-            docker_image:
-                    build: 
-                        path: ./grafanadockerfile
-                    name: mygrafana
-                    source: build
-                    tag: latest 
-                    push: no
+    - name: Build mytelegraf image
+      docker_image:
+        build: 
+          path: "{{ repo_dest }}/grafana-proiekt/telegrafdockerfile"
+        name: "mytelegraf:latest"
+        source: build
+        tag: latest
+        push: no
 
-          - name: Create external Docker Network
-            docker_network:
-                    name: external
-                    state: present
-                    ipam_config:
-                            - subnet: 10.0.0.0/24
+    - name: Build mygrafana image
+      docker_image:
+        build: 
+          path: "{{ repo_dest }}/grafana-proiekt/grafanadockerfile"
+        name: mygrafana
+        source: build
+        tag: latest
+        push: no
 
-          - name: Create volumes
-            docker_volume:
-                    name: "{{ item }}"
-            loop:
-                    - data-owncloud
-                    - apps-owncloud
-                    - config-owncloud
-                    - connection_info
-                    - influxdb2-config
-                    - influxdb2-data
+    - name: Create external Docker Network
+      docker_network:
+        name: external
+        state: present
+        ipam_config:
+          - subnet: 10.0.0.0/24
 
+    - name: Create volumes
+      docker_volume:
+        name: "{{ item }}"
+      loop:
+        - data-owncloud
+        - apps-owncloud
+        - config-owncloud
+        - connection_info
+        - influxdb2-config
+        - influxdb2-data
 
+    - name: Run owncloud container
+      docker_container:
+        name: myowncloud
+        state: started
+        image: myowncloud
+        networks:
+          - name: external
+        volumes:
+          - data-owncloud:/var/www/html/data
+          - apps-owncloud:/var/www/html/apps
+          - config-owncloud:/var/www/html/config
+        ports:
+          - "80:80"
 
-          - name: Run owncloud container
-            docker_container:
-                    name: myowncloud
-                    state: started
-                    image: myowncloud
-                    networks:
-                            - name: external
-                    volumes:
-                            - data-owncloud:/var/www/html/data
-                            - apps-owncloud:/var/www/html/apps
-                            - config-owncloud:/var/www/html/config
-                    ports:
-                            - "80:80"
-  
+    - name: Run myinfluxv2 container
+      docker_container:
+        name: myinfluxv2
+        state: started
+        image: myinflux
+        networks:
+          - name: external
+        volumes:
+          - influxdb2-data:/var/lib/influxdb2
+          - influxdb2-config:/etc/influxdb2
+          - connection_info:/connection_info
+        ports:
+          - "8086:8086"
 
-          - name: Run myinfluxv2 container
-            docker_container:
-                    name: myinfluxv2
-                    state: started
-                    image: myinflux
-                    networks:
-                            - name: external
-                    volumes:
-                            - influxdb2-data:/var/lib/influxdb2
-                            - influxdb2-config:/etc/influxdb2
-                            - connection_info:/connection_info
-                    ports:
-                            - "8086:8086"
+    - name: processing...
+      wait_for:
+        timeout: 30
 
-          - name: processing...
-            wait_for:
-                    timeout: 30
+    - name: Run grafana container
+      docker_container:
+        name: grafana
+        state: started
+        image: mygrafana
+        networks:
+          - name: external
+        volumes:
+          - connection_info:/connection_info
+        ports:
+          - "3000:3000"
 
-          - name: Run grafana container
-            docker_container:
-                    name: grafana
-                    state: started
-                    image: mygrafana
-                    networks:
-                            - name: external
-                    volumes:
-                            - connection_info:/connection_info
-                    ports:
-                            - "3000:3000"
+    - name: processing...
+      wait_for:
+        timeout: 15
 
-          - name: processing...
-            wait_for:
-                    timeout: 15
-
-
-          - name: Run mytelegraf container
-            docker_container:
-                    name: mytelegraf
-                    state: started
-                    image: mytelegraf
-                    networks:
-                            - name: external
-                    privileged: yes
-                    volumes:
-                            - /var/run/docker.sock:/var/run/docker.sock
-                            - connection_info:/connection_info
-                    ports:
-                            - "8125:8125"
-
-
-
-
-
-
+    - name: Run mytelegraf container
+      docker_container:
+        name: mytelegraf
+        state: started
+        image: mytelegraf
+        networks:
+          - name: external
+        privileged: yes
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - connection_info:/connection_info
+        ports:
+          - "8125:8125"
 
