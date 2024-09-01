@@ -47,6 +47,7 @@
       docker_image:
         build: 
           path: "{{ repo_dest }}/grafana-proiekt/grafanadockerfile"
+          network: host 
         name: mygrafana
         source: build
         tag: latest
