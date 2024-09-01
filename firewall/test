@@ -1,0 +1,1 @@
+docker run -dit --name firewall1 --network pub_net --ip 10.0.48.114  --cap-add=NET_ADMIN --cap-add=NET_RAW firewall && docker network connect internal firewall1

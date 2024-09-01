@@ -1,0 +1,93 @@
+- name: Set firewall
+  hosts: servers
+  gather_facts: no
+  vars:
+    repo_url: https://github.com/geo-kalo/containers.git
+    ansible_python_interpreter: /usr/bin/python3
+    parent_interface: "ens18"
+    repo_dest: /home/geo/firewall
+    working_dir_controller: /tmp/gg
+    systemd_units:
+      - "firewall-network.service"
+      - "firewall.service"
+      - "set-default-route.service"
+  tasks:
+
+    - name: Create working directory to controller node
+      file:
+              path: "working_dir_controller"
+              state: directory
+      delage_to: 127.0.0.1
+
+    - name: Clone Git repository to controller node
+      git:
+              repo:  "{{ repo_url }}"
+              dest: "{{ working_dir_controller }}"
+              version: main
+              clone: yes 
+              update: yes
+              accept_hostkey: yes
+      delage_to: 127.0.0.1
+
+    - name: Creating directories..
+      file: 
+        path: "{{ repo_dest }}"
+        state: directory
+        mode: '0755'
+        owner: geo
+        group: geo
+
+    - name: Copying scripts..
+      copy:
+        src: "{{ working_dir_controller }}/firewall/add-default-route"
+        dest: /home/geo/firewall
+        mode: '0777'  
+      become: yes 
+
+    - name: Build firewall image
+      docker_image:
+        build:
+          path: "{{ repo_dest }}"
+          dockerfile: "firewallfile"
+        name: "firewall:latest"
+        source: build
+        tag: latest
+        push: no
+         
+    - name: Create Docker pub_net network
+      docker_network:
+        name: pub_net
+        driver: macvlan
+        state: present
+        ipam_config:
+          - subnet: 10.0.48.0/24
+            gateway: 10.0.48.1
+        driver_options:
+          parent: "{{ parent_interface }}"
+     
+    - name: Create Docker internal network
+      docker_network:
+        name: internal
+        state: present
+        ipam_config:
+          - subnet: 192.168.199.0/24
+
+    - name: Copy systemd units to host
+      copy:
+              #src: "{{ repo_dest }}/{{ item }}"
+        src: "{{ working_dir_controller }}/{{ item }}"
+        dest: /etc/systemd/system/
+      loop: "{{ systemd_units }}"
+
+    - name: Enable systemd units
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+      loop: "{{ systemd_units }}"
+      become: yes
+     
+
+    - name: Reboot the host machine
+      shell: reboot
+      become: yes 
+      

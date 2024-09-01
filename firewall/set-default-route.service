@@ -1,0 +1,14 @@
+[Unit]
+Description=Set Default Route (via firewall container)
+After=network.target
+Wants=network-online.target
+
+[Service]
+User=root
+ExecStartPre=/bin/sleep 10
+ExecStart=/home/geo/firewall/add-default-route
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+

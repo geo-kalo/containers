@@ -1,0 +1,3 @@
+[servers]
+10.0.48.56   ansible_port=22  
+
