@@ -114,7 +114,11 @@
       become: yes
      
 
-    - name: Reboot the host machine
-      shell: reboot
-      become: yes 
-      
+        #    - name: Reboot the host machine
+        #shell: reboot
+        #become: yes 
+     
+    - name: Reboot configured systems
+      reboot:
+        msg: "Rebooting machine"  
+      become: yes
