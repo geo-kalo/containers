@@ -1,6 +1,8 @@
 - name: Set firewall
   hosts: servers
   gather_facts: no
+  remote_user: geo
+  become_method: sudo
   vars:
     repo_url: https://github.com/geo-kalo/containers.git
     ansible_python_interpreter: /usr/bin/python3
@@ -12,12 +14,11 @@
       - "firewall.service"
       - "set-default-route.service"
   tasks:
-
-    - name: Create working directory to controller node
-      file:
-              path: "working_dir_controller"
-              state: directory
-      delage_to: 127.0.0.1
+    #- name: Create working directory to slaves
+    #  file:
+    #          path: "{{ repo_dest }}"
+    #          state: directory
+    #  delegate_to: 127.0.0.1
 
     - name: Clone Git repository to controller node
       git:
@@ -27,7 +28,7 @@
               clone: yes 
               update: yes
               accept_hostkey: yes
-      delage_to: 127.0.0.1
+      delegate_to: 127.0.0.1
 
     - name: Creating directories..
       file: 
@@ -37,12 +38,37 @@
         owner: geo
         group: geo
 
-    - name: Copying scripts..
+    - name: Copying add-default-route script..
       copy:
         src: "{{ working_dir_controller }}/firewall/add-default-route"
-        dest: /home/geo/firewall
+        dest: "{{ repo_dest }}/"
         mode: '0777'  
       become: yes 
+
+    - name: Copying dockerfile(firewallfile)
+      copy:
+        src: "{{ working_dir_controller }}/firewall/firewallfile"
+        dest: "{{ repo_dest }}/"
+        mode: '0555'
+
+    - name: Copying firewall's entrypoint
+      copy:
+        src: "{{ working_dir_controller }}/firewall/entrypoint.sh"
+        dest: "{{ repo_dest }}/"
+        mode: '777'
+
+    - name: Copying firewall's initial setup..
+      copy:
+        src: "{{ working_dir_controller }}/firewall/iptables-rules"
+        dest: "{{ repo_dest }}/"
+        mode: '0555'
+    
+    - name: Copying rest of the needed files..
+      copy:
+        src: "{{ working_dir_controller }}/firewall/resolv.conf"
+        dest: "{{ repo_dest }}/"
+        mode: '0555'
+
 
     - name: Build firewall image
       docker_image:
@@ -70,14 +96,15 @@
         name: internal
         state: present
         ipam_config:
-          - subnet: 192.168.199.0/24
+          - subnet: 192.168.200.0/24
 
     - name: Copy systemd units to host
       copy:
               #src: "{{ repo_dest }}/{{ item }}"
-        src: "{{ working_dir_controller }}/{{ item }}"
+        src: "{{ working_dir_controller }}/firewall/{{ item }}"
         dest: /etc/systemd/system/
       loop: "{{ systemd_units }}"
+      become: yes
 
     - name: Enable systemd units
       systemd:
