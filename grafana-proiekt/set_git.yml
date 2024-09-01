@@ -51,6 +51,8 @@
         source: build
         tag: latest
         push: no
+        buildargs:
+          --network: host
 
     - name: Create external Docker Network
       docker_network:
