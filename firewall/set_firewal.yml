@@ -120,10 +120,32 @@
         enabled: yes
       become: yes
     
-    - name: Copy prune files
+    - name: Create working dir for grafana
+      file:
+              path: /home/geo/grafana-proiekt
+              state: directoty
+              owner: geo
+
+    - name: Copy needed files for ansible grafana
       copy:
               src: "{{ working_dir_controller }}/firewall/prune-monitoring-files" 
               dest: /home/geo/grafana-proiekt/prune-monitoring-files      
+
+    - name: Copy needed files for ansible grafana
+      copy:
+              src: "{{ working_dir_controller }}/firewall/inventory_grafana"
+              dest: /home/geo/grafana-proiekt/inventory
+              
+    - name: Copy needed files for ansible grafana
+      copy:
+              src: "{{ working_dir_controller }}/firewall/ansible.cfg"
+              dest: /home/geo/grafana-proiekt/ansible.cfg
+
+    - name: Copy needed files for ansible grafana
+      copy:
+              src: "{{ working_dir_controller }}/grafana-proiekt/set_git_fixed.yml"
+              dest: /home/geo/grafana-proiekt/set_git_fixed.yml
+
 
     - name: Reboot configured systems
       reboot:
