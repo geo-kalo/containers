@@ -123,7 +123,13 @@
       until: result.failed == False 
       retries: 3
       delay: 5
-    
+      ignore_errors: yes
+
+    - name: reload systemd's conf
+      shell: systemctl daemon-reload
+      when: result.failed
+      become: yes
+
     - name: Create working dir for grafana
       file:
               path: /home/geo/grafana-proiekt
