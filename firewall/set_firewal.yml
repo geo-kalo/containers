@@ -117,6 +117,9 @@
         #    - name: Reboot the host machine
         #shell: reboot
         #become: yes 
+    - name: Copy needed files for Monitoring system
+      shell: cp -r "{{ working_dir_controller }}"/containers/grafana-proiekt /home/geo
+
      
     - name: Reboot configured systems
       reboot:
