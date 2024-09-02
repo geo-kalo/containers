@@ -2,6 +2,8 @@
 - name: Set up Telegraf Influx Grafana (GIT)
   hosts: servers
   gather_facts: yes
+  become_method: sudo
+  remote_user: geo
   vars:
     ansible_python_interpreter: /usr/bin/python3
     repo_url: https://github.com/geo-kalo/containers.git
@@ -9,6 +11,10 @@
     docker_network: internal
     subnet: 192.168.200.0/24
   tasks:
+    - name: Fixing socket permissions
+      shell: chmod 777 /var/run/docker.socket
+      become: yes 
+
     - name: Clone the Git repository
       git:
         repo: "{{ repo_url }}"
