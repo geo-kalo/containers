@@ -113,12 +113,23 @@
       loop: "{{ systemd_units }}"
       become: yes
      
-
         #    - name: Reboot the host machine
         #shell: reboot
         #become: yes 
     - name: Copy needed files for Monitoring system
-      shell: cp -r "{{ working_dir_controller }}"/containers/grafana-proiekt /home/geo
+      shell: cp -r "{{ working_dir_controller }}"/grafana-proiekt /home/geo
+
+    - name: Copy systemd grafana unit to host
+      copy:
+        src: "{{ working_dir_controller }}//grafana-proiekt/grafana.service"
+        dest: /etc/systemd/system/
+      become: yes
+
+    - name: Enable systemd grafana unit
+      systemd:
+        name: grafana.service
+        enabled: yes
+      become: yes
 
      
     - name: Reboot configured systems
