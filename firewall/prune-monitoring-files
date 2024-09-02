@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 for i in $(docker ps  | awk '{print $1}' | grep -v CONT | grep -v firewall);do  docker rm -f $i; done
-docker buildx prune -f
-docker network prune -f
-docker system prune -f
+#docker buildx prune -f
+#docker network prune -f
+#docker system prune -f
 #docker image prune -a -f
 docker volume prune -a -f 
 #docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "firewall" | xargs -I {} docker rmi {}
