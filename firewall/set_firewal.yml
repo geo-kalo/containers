@@ -140,6 +140,7 @@
       copy:
               src: "{{ working_dir_controller }}/firewall/prune-monitoring-files" 
               dest: /home/geo/grafana-proiekt/prune-monitoring-files      
+              mode: '0777'
 
     - name: Copy needed files for ansible grafana
       copy:
