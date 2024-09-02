@@ -119,10 +119,10 @@
         name: grafana.service
         enabled: yes
       become: yes
+      register: result
+      until: result.failed == False 
       retries: 3
       delay: 5
-      until: result is succeeded
-      register: result
     
     - name: Create working dir for grafana
       file:
