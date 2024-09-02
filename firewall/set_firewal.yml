@@ -14,11 +14,6 @@
       - "firewall.service"
       - "set-default-route.service"
   tasks:
-    #- name: Create working directory to slaves
-    #  file:
-    #          path: "{{ repo_dest }}"
-    #          state: directory
-    #  delegate_to: 127.0.0.1
 
     - name: Clone Git repository to controller node
       git:
@@ -113,12 +108,6 @@
       loop: "{{ systemd_units }}"
       become: yes
      
-        #    - name: Reboot the host machine
-        #shell: reboot
-        #become: yes 
-    - name: Copy needed files for Monitoring system
-      shell: cp -r "{{ working_dir_controller }}"/grafana-proiekt /home/geo
-
     - name: Copy systemd grafana unit to host
       copy:
         src: "{{ working_dir_controller }}/firewall/grafana.service"
@@ -132,8 +121,10 @@
       become: yes
     
     - name: Copy prune files
-      shell: "cp {{ working_dir_controller }}/firewall/prune-monitoring-files /home/geo/wordir/prune-monitoring-files"    
-     
+      copy:
+              src: "{{ working_dir_controller }}/firewall/prune-monitoring-files" 
+              dest: /home/geo/grafana-proiekt/prune-monitoring-files      
+
     - name: Reboot configured systems
       reboot:
         msg: "Rebooting machine"  
