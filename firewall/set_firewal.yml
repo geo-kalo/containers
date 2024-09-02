@@ -123,7 +123,7 @@
     - name: Create working dir for grafana
       file:
               path: /home/geo/grafana-proiekt
-              state: directoty
+              state: directory
               owner: geo
 
     - name: Copy needed files for ansible grafana
