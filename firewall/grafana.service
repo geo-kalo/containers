@@ -1,0 +1,12 @@
+[Unit]
+Description=Running grafana as docker-monitoring service
+After=network.target
+
+[Service]
+ExecStartPre=/home/geo/prune-monitoring-files
+WorkingDirectory=/home/geo/grafana-proiekt
+#Environment="PATH=/home/build/dev/sol_project_overview/ansible-interface/venv/bin"
+ExecStart=/home/geo/.local/bin/ansible-playbook/ansible-playbook ./set_firewal.yml 
+
+[Install]
+WantedBy=multi-user.target
