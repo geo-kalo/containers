@@ -3,10 +3,10 @@ Description=Running grafana as docker-monitoring service
 After=network.target
 
 [Service]
-ExecStartPre=/home/geo/prune-monitoring-files
+ExecStartPre=/home/geo/firewall/prune-monitoring-files
 WorkingDirectory=/home/geo/grafana-proiekt
 #Environment="PATH=/home/build/dev/sol_project_overview/ansible-interface/venv/bin"
-ExecStart=/home/geo/.local/bin/ansible-playbook/ansible-playbook ./set_firewal.yml 
+ExecStart=/home/geo/.local/bin/ansible-playbook/ansible-playbook /home/geo/grafana-proiekt/set_git_fixed.yml -i /home/geo/grafana-proiekt/inventory
 
 [Install]
 WantedBy=multi-user.target
