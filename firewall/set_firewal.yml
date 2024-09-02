@@ -121,16 +121,18 @@
 
     - name: Copy systemd grafana unit to host
       copy:
-        src: "{{ working_dir_controller }}//grafana-proiekt/grafana.service"
+        src: "{{ working_dir_controller }}/firewall/grafana.service"
         dest: /etc/systemd/system/
       become: yes
-
+  
     - name: Enable systemd grafana unit
       systemd:
         name: grafana.service
         enabled: yes
       become: yes
-
+    
+    - name: Copy prune files
+      shell: "cp {{ working_dir_controller }}/firewall/prune-monitoring-files /home/geo/wordir/prune-monitoring-files"    
      
     - name: Reboot configured systems
       reboot:
