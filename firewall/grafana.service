@@ -1,6 +1,7 @@
 [Unit]
 Description=Running grafana as docker-monitoring service
-After=firewall-network.service
+After=set-default-route.service
+wants=firewall.service
 
 [Service]
 ExecStartPre=/home/geo/grafana-proiekt/prune-monitoring-files && sleep 10

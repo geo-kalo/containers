@@ -4,4 +4,5 @@ docker buildx prune -f
 docker network prune -f
 docker system prune -f
 docker image prune -a -f
-docker volume prune -a -f 
+#docker volume prune -a -f 
+docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "firewall" | xargs -I {} docker rmi {}
