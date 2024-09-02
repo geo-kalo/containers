@@ -12,7 +12,7 @@
     subnet: 192.168.200.0/24
   tasks:
     - name: Fixing socket permissions
-      shell: chmod 777 /var/run/docker.socket
+      shell: chmod 777 /var/run/docker.sock
       become: yes 
 
     - name: Clone the Git repository
