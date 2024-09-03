@@ -13,6 +13,7 @@
       - "firewall-network.service"
       - "firewall.service"
       - "set-default-route.service"
+      - "webserver.service"
   tasks:
 
     - name: Clone Git repository to controller node
