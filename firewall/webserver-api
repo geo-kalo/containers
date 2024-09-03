@@ -1,0 +1,15 @@
+FROM	ubuntu
+run	apt update -y && apt install -y apache2  libapache2-mod-wsgi-py3 iproute2 python3-full python3-pip python3-venv virtualenv curl net-tools vim postgresql-client procps
+
+copy activate_virtual_env.sh .
+copy packets .
+copy main.py .
+
+copy webserver-api-entrypoint.sh .
+copy virtual-fastapi.conf /etc/apache2/sites-enabled/
+copy ports.conf /etc/apache2/ports.conf
+
+run mkdir /venv && chmod u+x /activate_virtual_env.sh
+
+
+entrypoint sh webserver-api-entrypoint.sh
