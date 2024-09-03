@@ -8,12 +8,12 @@ After=network-online.target
 
 [Service]
 ExecStartPre=-/usr/bin/docker rm -f firewall
-ExecStart=/usr/bin/docker run --name firewall --network pub_net --ip 10.0.48.113 --cap-add=NET_ADMIN --cap-add=NET_RAW firewall 
+ExecStart=/usr/bin/docker run  --name webserver --network internal --ip 192.168.200.7 webserver 
 #ExecStartPost=/bin/bash -c "/usr/bin/docker network connect internal firewall"
 
 #ExecStartPost=/usr/bin/docker network connect internal firewall
-ExecStop=/usr/bin/docker stop firewall 
-ExecStopPost=/usr/bin/docker rm firewall 
+ExecStop=/usr/bin/docker stop webserver
+ExecStopPost=/usr/bin/docker rm webserver
 
 #Restart=always
 #RestartSec=10
