@@ -74,7 +74,19 @@
         source: build
         tag: latest
         push: no
-         
+
+    - name: Create webserver image
+      docker_image:
+        build:
+          path: "{{ repo_dest }}"
+          dockerfile: webserver-api
+          network: host
+        name: webserver
+        source: build
+        tag: latest
+        push: no
+              
+
     - name: Create Docker pub_net network
       docker_network:
         name: pub_net
@@ -85,7 +97,7 @@
             gateway: 10.0.48.1
         driver_options:
           parent: "{{ parent_interface }}"
-     
+
     - name: Create Docker internal network
       docker_network:
         name: internal
