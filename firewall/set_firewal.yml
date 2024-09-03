@@ -63,8 +63,21 @@
         src: "{{ working_dir_controller }}/firewall/resolv.conf"
         dest: "{{ repo_dest }}/"
         mode: '0555'
-
-
+     
+    - name: Copy webserver files
+      copy:
+        src: /tmp/gg/{{ item }}
+        dest: "{{ repo_dest }}/"
+      loop:
+        - activate_virtual_env.sh
+        - main.py
+        - packets
+        - ports.conf
+        - virtual-fastapi.conf
+        - webserver-api
+        - webserver-api-entrypoint.sh
+      
+     
     - name: Build firewall image
       docker_image:
         build:
