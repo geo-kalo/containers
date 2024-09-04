@@ -14,7 +14,7 @@ while true
 do
 
         ping -c3 -q 8.8.8.8
-        if ["$?" -eq 1]; then
+        if [ "$?" -eq 1 ]; then
                 ip addr add $gateway_interface_ip dev $gateway_interface
                 ip route replace default via $gateway_ip dev $gateway_interface
 		echo "firewall has failed. Restoring network"
