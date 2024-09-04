@@ -41,8 +41,9 @@ do
         echo "Firewall has failed. Restoring network"
     fi
 
-    ping -I $(route -n | grep {{ private_net_0 }} | awk '{print $8}') -c3 8.8.8.8
-    if [ "$?" -eq 1 ]; then
+    #ping -I $(route -n | grep {{ private_net_0 }} | awk '{print $8}') -c3 8.8.8.8
+    docker exec firewall ping -c3 8.8.8.8
+    if [ "$?" -eq 0 ]; then
 	ip route replace default via {{ private_net_ip }}2 dev $(route -n | grep {{ private_net_0 }} | awk '{print $8}')
 	ip addr del  $default_gateway_interface_ip dev {{ parent_interface }}
 	echo "Connection via firewall has been restored"
