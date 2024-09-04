@@ -1,6 +1,6 @@
 [Unit]
 Description=Set Default Route (via firewall container)
-After=network.target
+After=firewall-network.service
 Wants=network-online.target
 
 [Service]
