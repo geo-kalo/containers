@@ -17,8 +17,7 @@ do
         if ["$?" -eq 1]; then
                 ip addr add $gateway_interface_ip dev $gateway_interface
                 ip route replace default via $gateway_ip dev $gateway_interface
-                exit 0
-
+                
         fi
 
 	sleep 30
