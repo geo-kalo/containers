@@ -32,8 +32,8 @@ while true
 do
     ping -c3 -q 8.8.8.8
     if [ "$?" -eq 1 ]; then
-        ip addr add "$default_gateway_interface_ip" dev "$default_gateway_interface"
-        ip route replace default via "$default_gateway_ip" dev "$defaultgateway_interface"
+        ip addr add $default_gateway_interface_ip dev $default_gateway_interface
+        ip route replace default via $default_gateway_ip dev $defaultgateway_interface
 	
 	#ip addr add 10.0.48.56/24 dev ens18
 	#ip route replace default via 10.0.48.1 dev ens18
