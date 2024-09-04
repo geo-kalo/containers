@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+#
+#
+
+echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
+iptables-restore < /iptables-rules
+
+while true; do
+	default_route=$(ip route show default | awk '{print $3}')
+	if [ "$default_route" != "{{ pub_net_gateway  }}" ]; then
+		ip route replace default via {{ pub_net_gateway }} dev eth0
+	fi
+	sleep 10
+done
