@@ -14,12 +14,12 @@
     pub_net_ip: 10.0.48.113
     private_net_subnet: 192.168.199.0/24
     private_net_0: 192.168.199.0
-    private_net_ip: 192.168.199.13
+    private_net_ip: 192.168.199.
     repo_dest: /home/geo/firewall
     working_dir_controller: /tmp/gg
     systemd_units:
       - "firewall-network.service"
-      - "firewall.service"
+        #- "firewall.service"
       - "set-default-route.service"
       - "webserver.service"
   tasks:
@@ -83,7 +83,14 @@
         src: "{{ working_dir_controller }}/firewall/resolv.conf"
         dest: "{{ repo_dest }}/"
         mode: '0555'
-     
+    
+    - name: Copy prune images on reboot
+      copy:
+        src: "{{ working_dir_controller }}/firewall/prune_images"
+        dest:  "{{ repo_dest }}/"
+        mode: '0777'
+
+
     - name: Copy webserver files
       copy:
         src: "/tmp/gg/firewall/{{ item }}"
@@ -144,6 +151,13 @@
         src: "{{ working_dir_controller }}/firewall/{{ item }}"
         dest: /etc/systemd/system/
       loop: "{{ systemd_units }}"
+      become: yes
+
+    - name: Copy systemd units to host
+      template:
+        src: "{{ working_dir_controller }}/firewall/firewall.service.j2"
+        dest: /etc/systemd/system/firewall.service
+        mode: '777' 
       become: yes
 
     - name: Enable systemd units
