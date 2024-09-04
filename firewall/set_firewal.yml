@@ -6,7 +6,12 @@
   vars:
     repo_url: https://github.com/geo-kalo/containers.git
     ansible_python_interpreter: /usr/bin/python3
+    default_interface_ip: 10.0.48.56/24
+    default_gw: 10.0.48.1
     parent_interface: "ens18"
+    pub_net_subnet: 10.0.48.0/24
+    pub_net_gateway: 10.0.48.1
+    pub_net_ip: 10.0.48.113
     repo_dest: /home/geo/firewall
     working_dir_controller: /tmp/gg
     systemd_units:
@@ -107,8 +112,8 @@
         driver: macvlan
         state: present
         ipam_config:
-          - subnet: 10.0.48.0/24
-            gateway: 10.0.48.1
+          - subnet: "{{ pub_net_subnet }}"
+            gateway: "{{ pub_net_gateway }}"
         driver_options:
           parent: "{{ parent_interface }}"
 
