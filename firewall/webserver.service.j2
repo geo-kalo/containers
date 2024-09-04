@@ -1,0 +1,22 @@
+[Unit]
+Description=Run firewall docker
+#After=docker.service
+#Requires=docker.service
+Wants=network-online.target
+After=network-online.target
+
+
+[Service]
+ExecStartPre=-/usr/bin/docker rm -f firewall
+ExecStart=/usr/bin/docker run  --name webserver --network internal --ip {{ 192.168.199. }}7 webserver 
+#ExecStartPost=/bin/bash -c "/usr/bin/docker network connect internal firewall"
+
+#ExecStartPost=/usr/bin/docker network connect internal firewall
+ExecStop=/usr/bin/docker stop webserver
+ExecStopPost=/usr/bin/docker rm webserver
+
+#Restart=always
+#RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
