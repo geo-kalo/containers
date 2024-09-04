@@ -59,32 +59,26 @@
               src: "{{ working_dir_controller }}/firewall/add-default-route.j2"
               dest:  "{{ repo_dest }}/add-default-route"
               mode: '0555'
-        #- name: Copying add-default-route script..
-        #copy:
-        #src: "{{ working_dir_controller }}/firewall/add-default-route"
-        #dest: "{{ repo_dest }}/"
-        #mode: '0777'  
-        #become: yes 
 
-    - name: Copying dockerfile(firewallfile)
+    - name: Copy dockerfile(firewallfile)
       copy:
         src: "{{ working_dir_controller }}/firewall/firewallfile"
         dest: "{{ repo_dest }}/"
         mode: '0555'
 
-    - name: Copying firewall's entrypoint
+    - name: Copy firewall's entrypoint
       copy:
         src: "{{ working_dir_controller }}/firewall/entrypoint.sh"
         dest: "{{ repo_dest }}/"
         mode: '777'
 
-    - name: Copying firewall's initial setup..
-      copy:
-        src: "{{ working_dir_controller }}/firewall/iptables-rules"
-        dest: "{{ repo_dest }}/"
+    - name: Copy firewall's initial setup
+      template:
+        src: "{{ working_dir_controller }}/firewall/iptables-rules.j2"
+        dest: "{{ repo_dest }}/iptables-rules"
         mode: '0555'
     
-    - name: Copying rest of the needed files..
+    - name: Copy rest of the needed files..
       copy:
         src: "{{ working_dir_controller }}/firewall/resolv.conf"
         dest: "{{ repo_dest }}/"
