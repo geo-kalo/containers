@@ -21,7 +21,7 @@
       - "firewall-network.service"
         #- "firewall.service"
       - "set-default-route.service"
-      - "webserver.service"
+        #- "webserver.service"
   tasks:
 
     - name: Store default network into the system files.
@@ -159,6 +159,14 @@
         dest: /etc/systemd/system/firewall.service
         mode: '777' 
       become: yes
+
+    - name: Copy systemd units to host
+      template:
+        src: "{{ working_dir_controller }}/firewall/webserver.service.j2"
+        dest: /etc/systemd/system/webserver.service
+        mode: '777'
+      become: yes
+
 
     - name: Enable systemd units
       systemd:
