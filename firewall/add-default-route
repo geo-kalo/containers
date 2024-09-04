@@ -9,7 +9,9 @@
 #echo "Gateway Interface IP: $gateway_interface_ip"
 
 ip route replace default via 192.168.200.2 dev $(route -n | grep 192.168.200.0 | awk '{print $8}')
-ip addr del "$gateway_interface_ip" dev "$gateway_interface"
+#ip addr del "$gateway_interface_ip" dev "$gateway_interface"
+ip addr del 10.0.48.56/24 dev ens18
+
 
 # Update DNS and restart systemd-resolved
 echo "DNS=8.8.8.8 8.8.4.4" >> /etc/systemd/resolved.conf
