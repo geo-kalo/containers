@@ -19,7 +19,7 @@ echo "Default Gateway Interface IP: $default_gateway_interface_ip"
 
 
 
-ip route replace default via {{ private_net_ip }}.2 dev $(route -n | grep {{ private_net_0 }} | awk '{print $8}')
+ip route replace default via {{ private_net_ip }}2 dev $(route -n | grep {{ private_net_0 }} | awk '{print $8}')
 #ip addr del "$gateway_interface_ip" dev "$gateway_interface"
 #ip addr del 10.0.48.56/24 dev ens18
 
@@ -43,7 +43,7 @@ do
 
     ping -I $(route -n | grep {{ private_net_0 }} | awk '{print $8}') -c3 8.8.8.8
     if [ "$?" -eq 1 ]; then
-	ip route replace default via {{ private_net_ip }}.2 dev $(route -n | grep {{ private_net_0 }} | awk '{print $8}')
+	ip route replace default via {{ private_net_ip }}2 dev $(route -n | grep {{ private_net_0 }} | awk '{print $8}')
 	ip addr del  $default_gateway_interface_ip dev {{ parent_interface }}
 	echo "Connection via firewall has been restored"
     fi 
