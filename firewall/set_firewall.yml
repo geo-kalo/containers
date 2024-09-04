@@ -67,9 +67,9 @@
         mode: '0555'
 
     - name: Copy firewall's entrypoint
-      copy:
-        src: "{{ working_dir_controller }}/firewall/entrypoint.sh"
-        dest: "{{ repo_dest }}/"
+      template:
+        src: "{{ working_dir_controller }}/firewall/entrypoint.sh.j2"
+        dest: "{{ repo_dest }}/entrypoint.sh"
         mode: '777'
 
     - name: Copy firewall's initial setup
