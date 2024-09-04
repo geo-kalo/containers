@@ -9,7 +9,7 @@
     repo_url: https://github.com/geo-kalo/containers.git
     repo_dest: /tmp/grafana  # Update this to your desired path
     docker_network: internal
-    subnet: 192.168.200.0/24
+    subnet: 192.168.199.0/24
   tasks:
     - name: Fixing socket permissions
       shell: chmod 777 /var/run/docker.sock
