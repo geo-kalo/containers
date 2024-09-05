@@ -1,0 +1,78 @@
+docker network create -d macvlan   --subnet=10.0.48.0/24   --gateway=10.0.48.1   -o parent=ens18 pub_net
+docker network create -d macvlan   --subnet=192.168.199.0/24  -o parent=internalnet privete_net
+docker network create -d macvlan   --subnet=192.168.199.0/24 --gateway=10.0.48.1 -o parent=internalnet privet_net
+
+docker build -t firewall -f firewallfile .
+
+
+
+docker run -dit --name mytest --network pub_net --ip 10.0.47.113   ubuntu tail -f /dev/null
+docker network connect  privet_net  mytest
+
+
+ iptables -L -v -n --line-numbers
+ iptables -t nat -L -v -n --line-numbers
+ iptables -L -v -n --line-numbers
+ iptables -C INPUT -s 192.168.200.1 -j DROP
+ 
+ 
+ 
+ /etc/systemd/system/mytest.service
+ 
+ 
+ 
+ 
+ sudo ip addr add 10.0.48.56/24 dev ens18
+ sudo ip route replace default via 10.0.48.1 dev ens18
+
+ for i in $(docker ps  | awk '{print $1}' | grep -v CONT);do  docker rm -f $i; done
+ rm -rf /home/geo/firewall
+ rm -rf //home/geo/grafana-proiekt
+ 
+ for i in $(docker ps  | awk '{print $1}' | grep -v CONT | grep -v firewall);do  docker rm -f $i; done
+
+docker rm -f firewall
+docker buildx prune -f
+docker network prune -f
+docker system prune -f
+docker image prune -a -f
+docker volume prune -a -f 
+
+
+ 
+ 
+sudo systemctl disable firewall.service
+sudo  systemctl disable firewall-network.service
+sudo   systemctl disable  set-default-route.service
+ sudo rm -f /etc/systemd/system/firewall*
+ sudo rm -f /etc/systemd/system/set-default-route.service 
+ sudo rm -f /etc/systemd/system/grafana.service
+ sudo rm -f /etc/systemd/system/webserver.service
+ 
+ 
+ 
+ systemd-analyze critical-chain grafana.service
+ 
+ sudo iptables -A FORWARD -i br-cc73819098f3 -o ens18 -j ACCEPT
+sudo iptables -A FORWARD -i ens18 -o br-cc73819098f3 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+
+iptables -t nat -A PREROUTING -p tcp --dport 3000 -j DNAT --to-destination 192.168.200.1:3000
+sudo iptables -L -v -n --line-numbers
+
+
+
+
+traci lords
+
+
+
+
+
+1) thelo na metafero sto vm server ---> inventory_grafana ansible.cfg set_git_fixed.yml
+2) Na ftiaxo ena systemd unit pou tha trexei kata to boot to ansible
+3) gia na trexei i ansible prepei na ftiaxnete to /tmp/grafana
+4) na ftixnete to workingdir
+
+/home/geo/grafana-proiekt
+
