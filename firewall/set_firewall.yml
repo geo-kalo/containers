@@ -110,7 +110,7 @@
     - name: Copy database files
       template:
         src: "{{ working_dir_controller }}/firewall/databasefile.j2"
-        dest: "{{ repo_dest }}/"
+        dest: "{{ repo_dest }}/databasefile"
 
     - name: Build firewall image
       docker_image:
