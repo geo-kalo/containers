@@ -4,4 +4,3 @@ psycopg2-binary
 sqlmodel
 sqlalchemy
 uvicorn
-psycopg2
