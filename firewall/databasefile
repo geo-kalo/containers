@@ -1,0 +1,5 @@
+FROM docker.io/library/postgres
+
+volume /var/lib/postgresql/data
+entrypoint /usr/local/bin/docker-entrypoint.sh postgres
+

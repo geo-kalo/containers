@@ -1,0 +1,22 @@
+[Unit]
+Description=Run Database docker
+#After=docker.service
+#Requires=docker.service
+Wants=network-online.target
+After=network-online.target
+
+
+[Service]
+ExecStartPre=-/usr/bin/docker rm -f databasepsql
+ExecStart=/usr/bin/docker run  --name databasepsql --volume datavbase_volume --network internal --ip {{ private_net_ip }}8 databasepsql 
+#ExecStartPost=/bin/bash -c "/usr/bin/docker network connect internal firewall"
+
+#ExecStartPost=/usr/bin/docker network connect internal firewall
+ExecStop=/usr/bin/docker stop databasepsql
+ExecStopPost=/usr/bin/docker rm databasepsql
+
+#Restart=always
+#RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
