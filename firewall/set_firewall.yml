@@ -181,7 +181,7 @@
     - name: Copy systemd units to host
       template:
         src: "{{ working_dir_controller }}/firewall/databasepsql.service.j2"
-        dest: /etc/systemd/system/firewall.service
+        dest: /etc/systemd/system/databasepsql.service
         mode: '7777'
       become: yes     
 
@@ -206,7 +206,8 @@
       loop:
         - "webserver.service"
         - "databasepsql.service" 
-     
+      become: yes
+
     - name: Copy systemd grafana unit to host
       copy:
         src: "{{ working_dir_controller }}/firewall/grafana.service"
