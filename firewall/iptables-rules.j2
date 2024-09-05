@@ -8,6 +8,7 @@
 :DOCKER_POSTROUTING - [0:0]
 -A PREROUTING -p tcp -m tcp --dport 2222 -j DNAT --to-destination {{ private_net_ip }}1:22
 -A PREROUTING -p tcp -m tcp --dport 3000 -j DNAT --to-destination {{ private_net_ip }}1:3000
+-A PREROUTING -p tcp -m tcp --dport 49888 -j DNAT --to-destination {{ private_net_ip }}7:49888
 -A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT
 -A POSTROUTING -d 127.0.0.11/32 -j DOCKER_POSTROUTING
 -A POSTROUTING -o eth1 -j MASQUERADE
