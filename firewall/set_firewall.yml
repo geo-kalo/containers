@@ -158,7 +158,11 @@
     - name: Create database volume
       docker_volume:
         name: datavbase_volume
-  
+
+    - name: Create firewall volume
+      docker_volume:
+        name: firewall_volume          
+
     - name: Copy systemd units to host
       copy:
               #src: "{{ repo_dest }}/{{ item }}"
