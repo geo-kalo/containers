@@ -17,6 +17,9 @@
     private_net_ip: 192.168.199.
     repo_dest: /home/geo/firewall
     working_dir_controller: /tmp/gg
+    database_user: admin
+    database_password: 666
+    database_db: firewall
     systemd_units:
       - "firewall-network.service"
         #- "firewall.service"
@@ -91,7 +94,7 @@
         mode: '0777'
 
 
-    - name: Copy webserver/database files
+    - name: Copy webserver files
       copy:
         src: "/tmp/gg/firewall/{{ item }}"
         dest: "{{ repo_dest }}/"
@@ -103,8 +106,12 @@
         - virtual-fastapi.conf
         - webserver-api
         - webserver-api-entrypoint.sh
-        - databasefile
-     
+    
+    - name: Copy database files
+      template:
+        src: "{{ working_dir_controller }}/firewall/databasefile.j2"
+        dest: "{{ repo_dest }}/"
+
     - name: Build firewall image
       docker_image:
         build:

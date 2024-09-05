@@ -1,0 +1,11 @@
+FROM docker.io/library/postgres
+
+ENV 	  POSTGRES_PASSWORD={{ database_password }}
+ENV	  POSTGRES_USER={{ database_user }}
+ENV       POSTGRES_DB={{ database_db }}
+
+
+
+volume /var/lib/postgresql/data
+entrypoint /usr/local/bin/docker-entrypoint.sh postgres
+
