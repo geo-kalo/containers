@@ -1,7 +1,7 @@
 FROM docker.io/library/postgres
 
 ENV 	  POSTGRES_PASSWORD=666
-ENV	  POSTGRES_USER=admim
+ENV	  POSTGRES_USER=admin
 ENV       POSTGRES_DB=firewall
 
 
