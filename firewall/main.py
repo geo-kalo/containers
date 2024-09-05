@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError #alios den fernei exception
 app = FastAPI()
 application = ASGIMiddleware(app)
 
-
+#https://medium.com/technology-hits/database-queries-in-python-sqlalchemy-postgresql-e90afe0a06b4
 
 def get_connection():
     url_object = URL.create(
