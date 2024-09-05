@@ -13,24 +13,24 @@ def get_connection():
     url_object = URL.create(
         "postgresql+psycopg2",
         username="admin",
-        password="666",
+        password="66d6",
         host="192.168.199.8",
         database="firewall",
     )
     print(url_object)
-    return create_engine(url_object)
-
+    engine = create_engine(url_object)
+    return engine.connect()
 
 @app.get("/test")
 async def read_test():
     try:
-        engine = get_connection()
-        connection = engine.connect()
+        connection = get_connection()
         return "Connected to database"
     except OperationalError as e:
-        print("Connection error due to the following error: \n", e)
-        return("Connection error due to the following error: \n", e)
-
+        print("Connection error due to the following error: \n", str(e.orig))
+        return(str(e.orig))
+    finally:
+        connection.close()
 
     #finally:
 
