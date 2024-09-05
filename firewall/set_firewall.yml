@@ -91,7 +91,7 @@
         mode: '0777'
 
 
-    - name: Copy webserver files
+    - name: Copy webserver/database files
       copy:
         src: "/tmp/gg/firewall/{{ item }}"
         dest: "{{ repo_dest }}/"
@@ -103,7 +103,7 @@
         - virtual-fastapi.conf
         - webserver-api
         - webserver-api-entrypoint.sh
-      
+        - databasefile
      
     - name: Build firewall image
       docker_image:
@@ -126,6 +126,16 @@
         tag: latest
         push: no
               
+    - name: Create database image
+      docker_image:
+        build:
+          path: "{{ repo_dest }}"
+          dockerfile: databasefile
+          network: host 
+        name: databasepsql
+        source: build
+        tag: latest
+        push: no 
 
     - name: Create Docker pub_net network
       docker_network:
@@ -144,7 +154,11 @@
         state: present
         ipam_config:
           - subnet: "{{ private_net_subnet }}"
-
+    
+    - name: Create database volume
+      docker_volume:
+        name: datavbase_volume
+  
     - name: Copy systemd units to host
       copy:
               #src: "{{ repo_dest }}/{{ item }}"
@@ -162,11 +176,17 @@
 
     - name: Copy systemd units to host
       template:
+        src: "{{ working_dir_controller }}/firewall/databasepsql.service.j2"
+        dest: /etc/systemd/system/firewall.service
+        mode: '7777'
+      become: yes     
+
+    - name: Copy systemd units to host
+      template:
         src: "{{ working_dir_controller }}/firewall/webserver.service.j2"
         dest: /etc/systemd/system/webserver.service
         mode: '777'
       become: yes
-
 
     - name: Enable systemd units
       systemd:
@@ -174,6 +194,14 @@
         enabled: yes
       loop: "{{ systemd_units }}"
       become: yes
+
+    - name: Enable systemd units
+      systemd:
+        name: "{{ item }}"
+        enabled: yes
+      loop:
+        - "webserver.service"
+        - "databasepsql.service" 
      
     - name: Copy systemd grafana unit to host
       copy:
