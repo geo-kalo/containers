@@ -49,12 +49,13 @@ def create_eng():
     return engine
 
 
-@app.get("/create-table/")
-async def create_table():
+@app.post("/create-table/{item}",  response_model=None)
+async def create_table(item: str):
     try:
+        print(item)
         engine = create_eng()
         Base.metadata.create_all(engine)
-        return "Table created successfully"
+        return "table created"
     except OperationalError as e:
         print("Connection error due to the following error: \n", str(e.orig))
         return e
