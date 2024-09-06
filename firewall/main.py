@@ -1,15 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from a2wsgi import ASGIMiddleware
-from sqlalchemy import create_engine # to thelo gia to create tou object
-from sqlalchemy.engine import URL # to thelo gia to url
-from sqlalchemy.exc import OperationalError #alios den fernei exception
-from sqlalchemy.orm import sessionmaker, Session # gia ta session
-from sqlalchemy.ext.declarative import declarative_base #create tables
+from sqlalchemy import create_engine  # to thelo gia to create tou object
+from sqlalchemy.engine import URL  # to thelo gia to url
+from sqlalchemy.exc import OperationalError  # alios den fernei exception
+from sqlalchemy.orm import sessionmaker, Session  # gia ta session
+from sqlalchemy.ext.declarative import declarative_base  # create tables
 from sqlalchemy.dialects.postgresql import INET
 from sqlalchemy import insert
-from pydantic import BaseModel
+from pydantic import BaseModel, validator  # to xriazome kai to validate pou ginete mesa sto class Firewallentry
 from fastapi import Depends
-
+import ipaddress
 
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Text
 from datetime import datetime
@@ -17,21 +17,24 @@ from datetime import datetime
 app = FastAPI()
 application = ASGIMiddleware(app)
 
-#https://jnikenoueba.medium.com/using-fastapi-with-sqlalchemy-5cd370473fe5
-#https://medium.com/technology-hits/database-queries-in-python-sqlalchemy-postgresql-e90afe0a06b4
-#https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_core_connecting_to_database.htm
-#https://www.datacamp.com/tutorial/sqlalchemy-tutorial-examples
-#https://jnikenoueba.medium.com/using-fastapi-with-sqlalchemy-5cd370473fe5
+# https://jnikenoueba.medium.com/using-fastapi-with-sqlalchemy-5cd370473fe5
+# https://medium.com/technology-hits/database-queries-in-python-sqlalchemy-postgresql-e90afe0a06b4
+# https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_core_connecting_to_database.htm
+# https://www.datacamp.com/tutorial/sqlalchemy-tutorial-examples
+# https://jnikenoueba.medium.com/using-fastapi-with-sqlalchemy-5cd370473fe5
 
 Base = declarative_base()
+
 
 class Firewall(Base):
     __tablename__ = 'firewall'
     rule_id = Column(Integer, primary_key=True, autoincrement=True)
     chain = Column(String(15), nullable=False)  # e.g., INPUT, OUTPUT, FORWARD
     protocol = Column(String(10))  # e.g., tcp, udp, icmp
-    src_ip = Column(String(15))  # Source IP address
-    dst_ip = Column(String(15))  # Destination IP address
+    src_ip = Column(INET)
+    dst_ip = Column(INET)
+    # src_ip = Column(String(15))  # Source IP address
+    # dst_ip = Column(String(15))  # Destination IP address
     src_port = Column(Integer)  # Source Port
     dst_port = Column(Integer)  # Destination Port
     action = Column(String(10), nullable=False)  # e.g., ACCEPT, DROP, REJECT
@@ -39,7 +42,7 @@ class Firewall(Base):
     out_interface = Column(String(20))  # Outgoing network interface
     state = Column(String(20))  # Connection state (e.g., NEW, ESTABLISHED)
     comment = Column(Text)  # Optional comment about the rule
-    #log = Column(Boolean, default=False)  # Whether to log the rule
+    # log = Column(Boolean, default=False)  # Whether to log the rule
     created_at = Column(DateTime, default=datetime.utcnow)  # Creation timestamp
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Last update timestamp
 
@@ -57,7 +60,16 @@ class Firewallentry(BaseModel):
     state: str
     comment: str
 
-#database open / sessions
+    @validator('src_ip', 'dst_ip')
+    def validate_ip(cls, v):
+        try:
+            ipaddress.ip_address(v)
+        except ValueError:
+            raise ValueError(f"Invalid IP address: {v}")
+        return v
+
+
+# database open / sessions
 def create_eng():
     url_object = URL.create(
         "postgresql+psycopg2",
@@ -69,7 +81,9 @@ def create_eng():
     engine = create_engine(url_object)
     return engine
 
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=create_eng())
+
 
 def get_db():
     db = SessionLocal()
@@ -77,10 +91,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
 #####################################
 
 
-@app.post("/create-table/{item}",  response_model=None)
+@app.post("/create-table/{item}", response_model=None)
 async def create_table(item: str):
     try:
         print(item)
@@ -91,8 +107,9 @@ async def create_table(item: str):
         print("Connection error due to the following error: \n", str(e.orig))
         return e
 
+
 @app.post("/insert-rule/", response_model=None)
-async  def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
+async def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
     try:
         new_rule = Firewall(
             chain=rule.chain,
@@ -117,12 +134,31 @@ async  def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Connection error: {str(e.orig)}")
 
 
+@app.get("/get-rule/{rule_id}")
+async def get_rule(rule_id: int, db: Session = Depends(get_db)):
+    try:
+        rule = db.query(Firewall).filter(Firewall.rule_id == rule_id).first()
+        if not rule:
+            raise HTTPException(status_code=404, detail="Rule not found")
+        return rule
+
+    except OperationalError as e:
+        print(f"Error: {str(e)}")
 
 
 
+@app.get("/get-rules")
+async def get_rules(db: Session = Depends(get_db)):
+    try:
+        rules = rules = db.query(Firewall).all()
+        if not rules:
+            raise HTTPException(status_code=404, detail="Empty database")
+        return rules
+    except OperationalError as e:
+        print(f"Error: {str(e)}")
 
-#@app.get("/test")
-#async def read_test():
+# @app.get("/test")
+# async def read_test():
 #    try:
 #        connection = get_connection()
 #        return "Connected to database"
@@ -132,12 +168,10 @@ async  def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
 #    finally:
 #        connection.close()
 
-    #finally:
+# finally:
 
 
-
-
-#curl -k -X 'POST' https://localhost:49888/insert-rule/   -H 'Content-Type: application/json'   -d '{
+# curl -k -X 'POST' https://localhost:49888/insert-rule/   -H 'Content-Type: application/json'   -d '{
 #        "chain": "INPUT",
 #        "protocol": "tcp",
 #        "src_ip": "192.168.1.1",
