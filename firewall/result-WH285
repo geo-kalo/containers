@@ -57,7 +57,7 @@ sudo   systemctl disable  set-default-route.service
 sudo iptables -A FORWARD -i ens18 -o br-cc73819098f3 -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 
-iptables -t nat -A PREROUTING -p tcp --dport 3000 -j DNAT --to-destination 192.168.200.1:3000
+iptables -t nat -A PREROUTING -p tcp --dport 49888 -j DNAT --to-destination 192.168.199.7:49888
 sudo iptables -L -v -n --line-numbers
 
 
@@ -75,4 +75,22 @@ traci lords
 4) na ftixnete to workingdir
 
 /home/geo/grafana-proiekt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+curl -k -X 'POST' https://localhost:49888/create-table/add   -H 'Content-Type: application/json'   -d '"firewall"'
 
