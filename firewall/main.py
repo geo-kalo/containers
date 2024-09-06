@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base #create tables
 from sqlalchemy.dialects.postgresql import INET
 from sqlalchemy import insert
 from pydantic import BaseModel
+from fastapi import Depends
 
 
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Text
@@ -91,7 +92,7 @@ async def create_table(item: str):
         return e
 
 @app.post("/insert-rule/", response_model=None)
-async  def insert_rule(rule: Firewallentry):
+async  def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
     try:
         new_rule = Firewall(
             chain=rule.chain,
