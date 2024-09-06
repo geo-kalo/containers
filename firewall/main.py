@@ -137,3 +137,16 @@ async  def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
 
 
 
+#curl -k -X 'POST' https://localhost:49888/insert-rule/   -H 'Content-Type: application/json'   -d '{
+#        "chain": "INPUT",
+#        "protocol": "tcp",
+#        "src_ip": "192.168.1.1",
+#        "dst_ip": "192.168.1.2",
+#        "src_port": 80,
+#        "dst_port": 8080,
+#        "action": "ACCEPT",
+#        "in_interface": "eth0",
+#        "out_interface": "eth1",
+#        "state": "NEW",
+#        "comment": "Allow HTTP traffic"
+#      }'
