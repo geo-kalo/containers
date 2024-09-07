@@ -57,6 +57,7 @@ class Firewallentry(BaseModel):
     out_interface: str
     state: str
     comment: str
+    order_id: int
 
     @validator('src_ip', 'dst_ip')
     def validate_ip(cls, v):
@@ -167,6 +168,7 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
     rule.out_interface = updated_rule.out_interface
     rule.state = updated_rule.state
     rule.comment = updated_rule.comment
+    rule.order_id = updated_rule.order_id
 
     db.commit()
     db.refresh(rule)
@@ -199,5 +201,7 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
 #        "src_port": 80,
 #        "dst_port": 443,
 #        "action": "ACCEPT",
+#        "in_interface": "eth100",
+#        "out_interface": "eth1",
 #        "comment": "Updated rule"
 #    }'
