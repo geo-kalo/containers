@@ -10,9 +10,9 @@ from sqlalchemy import insert
 from pydantic import BaseModel, validator  # to xriazome kai to validate pou ginete mesa sto class Firewallentry
 from fastapi import Depends
 import ipaddress
-
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Text
 from datetime import datetime
+from sqlalchemy import text, column
 
 app = FastAPI()
 application = ASGIMiddleware(app)
@@ -43,7 +43,7 @@ class Firewall(Base):
     # log = Column(Boolean, default=False)  # Whether to log the rule
     created_at = Column(DateTime, default=datetime.utcnow)  # Creation timestamp
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Last update timestamp
-
+    order_id = Column(Integer, server_default=text("rule_id"))
 
 class Firewallentry(BaseModel):
     chain: str
@@ -118,6 +118,8 @@ async def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
         db.add(new_rule)
         db.commit()
         db.refresh(new_rule)
+        new_rule.order_id = new_rule.rule_id
+        db.commit()
         return {"message": "Firewall rule added successfully"}
     except OperationalError as e:
         db.rollback()
