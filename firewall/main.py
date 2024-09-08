@@ -13,6 +13,8 @@ import ipaddress
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Text
 from datetime import datetime
 from sqlalchemy import text, column
+from jinja2 import Environment, FileSystemLoader
+
 
 app = FastAPI()
 application = ASGIMiddleware(app)
@@ -184,6 +186,8 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
 @app.get("/create-iptables")
 async def create_iptables(db: Session = Depends(get_db)):
     try:
+        env = Environment(loader=FileSystemLoader('/var/www/fastapi/doc'))
+        template = env.get_template('iptables.jinja')
         rules = db.query(Firewall).order_by(Firewall.order_id.asc()).all()
         if not rules:
             raise HTTPException(status_code=404, detail="Empty database")
@@ -241,11 +245,11 @@ async def create_iptables(db: Session = Depends(get_db)):
 
 
 
+#source /venv/bin/activate
 
 
 
-
-
+#thelo ena jinja  kai na to kano kai copy sto sosto path
 
 
 
