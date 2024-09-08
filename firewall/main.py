@@ -189,6 +189,25 @@ async def create_iptables(db: Session = Depends(get_db)):
         env = Environment(loader=FileSystemLoader('/var/www/fastapi/doc'))
         template = env.get_template('iptables.jinja')
         rules = db.query(Firewall).order_by(Firewall.order_id.asc()).all()
+        for rule in rules:
+            print(rule.rule_id, rule.chain, rule.protocol, rule.src_ip, rule.dst_port, rule.action, rule.in_interface, rule.out_interface, rule.state, rule.comment , rule.order_id)
+            content = template.render(
+                rule_id=rule.rule_id,
+                chain=rule.chain,
+                protocol=rule.protocol,
+                src_ip=rule.src_ip,
+                dst_ip=rule.dst_ip,
+                src_port=rule.src_port,
+                dst_port=rule.dst_port,
+                action=rule.action,
+                in_interface=rule.in_interface,
+                out_interface=rule.out_interface,
+                state=rule.state,
+                comment=rule.comment,
+                order_id=rule.order_id
+            )
+        with open("/var/www/fastapi/doc/iptables", 'w') as myfile:
+            myfile.write(content)
         if not rules:
             raise HTTPException(status_code=404, detail="Empty database")
         return rules
@@ -233,6 +252,7 @@ async def create_iptables(db: Session = Depends(get_db)):
 #        "out_interface": "eth1",
 #        "comment": "Updated rule"
 #    }'
+
 
 
 #curl -k -X 'GET' https://localhost:49888/create-iptables -H 'Content-Type: application/json'
