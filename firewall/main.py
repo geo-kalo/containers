@@ -25,7 +25,6 @@ application = ASGIMiddleware(app)
 
 Base = declarative_base()
 
-
 class Firewall(Base):
     __tablename__ = 'firewall'
     rule_id = Column(Integer, primary_key=True, autoincrement=True)
@@ -43,7 +42,9 @@ class Firewall(Base):
     # log = Column(Boolean, default=False)  # Whether to log the rule
     created_at = Column(DateTime, default=datetime.utcnow)  # Creation timestamp
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Last update timestamp
-    order_id = Column(Integer, server_default=text("rule_id"))
+    order_id = Column(Integer) #, server_default=text("rule_id"))
+    #order_id = Column(Integer, server_default=text("rule_id"))
+
 
 class Firewallentry(BaseModel):
     chain: str
@@ -175,6 +176,22 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
     return {"message": "Firewall rule updated successfully", "rule": rule}
 
 
+
+@app.get("/create-iptables")
+async def create_iptables(db: Session = Depends(get_db)):
+    try:
+        rules = db.query(Firewall).order_by(Firewall.order_id.asc()).all()
+        if not rules:
+            raise HTTPException(status_code=404, detail="Empty database")
+        return rules
+    except OperationalError as e:
+        print(f"Error: {str(e)}")
+
+
+
+
+
+
 # curl -k -X 'POST' https://localhost:49888/insert-rule/   -H 'Content-Type: application/json'   -d '{
 #        "chain": "INPUT",
 #        "protocol": "tcp",
@@ -191,7 +208,10 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
 
 
 
-#curl -k -X PUT "https://127.0.0.1:49888/update-rule/1" \
+
+
+
+#curl -k -X PUT "https://127.0.0.1:49888/update-rule/2" \
 #    -H "Content-Type: application/json" \
 #    -d '{
 #        "chain": "OUTPUT",
@@ -205,3 +225,32 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
 #        "out_interface": "eth1",
 #        "comment": "Updated rule"
 #    }'
+
+
+#curl -k -X 'GET' https://localhost:49888/create-iptables -H 'Content-Type: application/json'
+
+
+#curl -k -X 'POST' https://localhost:49888/create-table/add   -H 'Content-Type: application/json'   -d '"firewall"'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
