@@ -115,12 +115,16 @@ async def insert_rule(rule: Firewallentry, db: Session = Depends(get_db)):
             in_interface=rule.in_interface,
             out_interface=rule.out_interface,
             state=rule.state,
-            comment=rule.comment
+            comment=rule.comment,
+            order_id=rule.order_id
         )
         db.add(new_rule)
         db.commit()
         db.refresh(new_rule)
-        new_rule.order_id = new_rule.rule_id
+        if new_rule.order_id == 0:
+            new_rule.order_id = new_rule.rule_id
+        else:
+            new_rule.order_id = new_rule.order_id
         db.commit()
         return {"message": "Firewall rule added successfully"}
     except OperationalError as e:
