@@ -182,37 +182,82 @@ async def update_rule(rule_id: int, updated_rule: Firewallentry, db: Session = D
     return {"message": "Firewall rule updated successfully", "rule": rule}
 
 
+@app.post("/delete-rule/{rule_id}")
+async def delete_rule(rule_id: int, db: Session = Depends(get_db)):
+    try:
+        firewall_rule = db.query(Firewall).filter(Firewall.rule_id == rule_id).first()
+        if not firewall_rule:
+            raise HTTPException(status_code=404, detail="Rule not found")
+
+        db.delete(firewall_rule)
+        db.commit()
+        return {"message": "Rule deleted successfully"}
+    except OperationalError as e:
+        print(f"Database error: {e}")
+        raise HTTPException(status_code=500, detail="Error on delete")
+
+
+from jinja2 import TemplateError
 
 @app.get("/create-iptables")
 async def create_iptables(db: Session = Depends(get_db)):
     try:
-        env = Environment(loader=FileSystemLoader('/var/www/fastapi/doc'))
-        template = env.get_template('iptables.jinja')
-        rules = db.query(Firewall).order_by(Firewall.order_id.asc()).all()
-        for rule in rules:
-            print(rule.rule_id, rule.chain, rule.protocol, rule.src_ip, rule.dst_port, rule.action, rule.in_interface, rule.out_interface, rule.state, rule.comment , rule.order_id)
-            content = template.render(
-                rule_id=rule.rule_id,
-                chain=rule.chain,
-                protocol=rule.protocol,
-                src_ip=rule.src_ip,
-                dst_ip=rule.dst_ip,
-                src_port=rule.src_port,
-                dst_port=rule.dst_port,
-                action=rule.action,
-                in_interface=rule.in_interface,
-                out_interface=rule.out_interface,
-                state=rule.state,
-                comment=rule.comment,
-                order_id=rule.order_id
-            )
-        with open("/var/www/fastapi/doc/iptables", 'w') as myfile:
-            myfile.write(content)
+        print("Endpoint hit - Starting to process request")
+        env = Environment(loader=FileSystemLoader('/var/www/fastapi/doc/'))
+        try:
+            template = env.get_template('iptables.jinja')
+        except TemplateError as e:
+            print(f"Template error: {str(e)}")
+            raise HTTPException(status_code=500, detail="Template error")
+
+        rules = db.query(Firewall).order_by(Firewall.rule_id.asc()).all()
         if not rules:
+            print("No rules found in the database")
             raise HTTPException(status_code=404, detail="Empty database")
-        return rules
+        print(f"Number of rules fetched: {len(rules)}")
+
+        l_rules = []
+        for rule in rules:
+            print(f"Processing rule: {rule.rule_id}")
+            d_rule = {
+                "rule_id": rule.rule_id,
+                "chain": rule.chain,
+                "protocol": rule.protocol,
+                "src_ip": rule.src_ip,
+                "dst_ip": rule.dst_ip,
+                "src_port": rule.src_port,
+                "dst_port": rule.dst_port,
+                "action": rule.action,
+                "in_interface": rule.in_interface,
+                "out_interface": rule.out_interface,
+                "state": rule.state,
+                "comment": rule.comment,
+                "order_id": rule.order_id
+            }
+            l_rules.append(d_rule)
+
+        try:
+            content = template.render(rules=l_rules)
+        except TemplateError as e:
+            print(f"Error rendering template: {str(e)}")
+            raise HTTPException(status_code=500, detail="Error rendering template")
+
+        print("Template rendered successfully")
+
+        # Append to the iptables file
+        with open("/var/www/fastapi/doc/iptables", 'a') as myfile:
+            myfile.write(content)
+
+        return {"message": "iptables file created successfully"}
+
     except OperationalError as e:
-        print(f"Error: {str(e)}")
+        print(f"Database connection error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Database connection error")
+
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 
 
 
@@ -260,7 +305,7 @@ async def create_iptables(db: Session = Depends(get_db)):
 
 #curl -k -X 'POST' https://localhost:49888/create-table/add   -H 'Content-Type: application/json'   -d '"firewall"'
 
-
+#curl -k -X 'POST' https://localhost:49888/delete-rule/4   -H 'Content-Type: application/json'   -d '"firewall"'
 
 
 
