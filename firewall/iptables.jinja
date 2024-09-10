@@ -4,6 +4,10 @@
 :OUTPUT ACCEPT [9903:831852]
 -A INPUT -m state --state ESTABLISHED -j ACCEPT
 -A FORWARD -m state --state ESTABLISHED -j ACCEPT
+
+-A INPUT -i eth1 -j ACCEPT
+-A FORWARD -i eth1 -j ACCEPT
+
 -A FORWARD -d 192.168.199.1 -p tcp -m tcp --dport 22 -m state --state NEW,RELATED -j ACCEPT
 -A FORWARD -d 192.168.199.1 -p tcp -m tcp --dport 3000 -m state --state NEW,RELATED -j ACCEPT
 -A FORWARD -d 192.168.199.7 -p tcp -m tcp --dport 49888 -m state --state NEW,RELATED -j ACCEPT
@@ -12,7 +16,7 @@
 # start of dynamically generated rules
 {%- for rule in rules -%}
 {%- if rule.chain == 'nat' %}
--A FORWARD -d {{ rule.dst_ip }} -p {{ rule.protocol if rule.protocol else 'tcp' }} -m {{ rule.protocol if rule.protocol else 'tcp' }} --dport {{ rule.src_port }} -m state --state NEW,RELATED -j ACCEPT
+-A FORWARD -d {{ rule.dst_ip }} -p {{ rule.protocol if rule.protocol else 'tcp' }} -m {{ rule.protocol if rule.protocol else 'tcp' }} --dport {{ rule.dst_port }} -m state --state NEW,RELATED -j ACCEPT
 {%- endif %}
 {%- endfor %}
 -A FORWARD -j NFLOG --nflog-prefix 'FORWARD-DROP'
