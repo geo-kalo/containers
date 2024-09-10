@@ -82,6 +82,7 @@
         - virtual-fastapi.conf
         - webserver-api
         - webserver-api-entrypoint.sh
+        - iptables.jinja
       
      
     - name: Build firewall image

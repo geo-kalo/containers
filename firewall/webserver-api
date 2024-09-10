@@ -8,6 +8,7 @@ copy main.py .
 copy webserver-api-entrypoint.sh .
 copy virtual-fastapi.conf /etc/apache2/sites-enabled/
 copy ports.conf /etc/apache2/ports.conf
+copy iptables.jinja /var/www/fastapi/doc
 
 run mkdir /venv && chmod u+x /activate_virtual_env.sh
 
