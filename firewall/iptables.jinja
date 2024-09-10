@@ -12,7 +12,7 @@
 # start of dynamically generated rules
 {%- for rule in rules -%}
 {%- if rule.chain == 'nat' %}
--A FORWARD -d {{ rule.dst_ip }} -p {{ rule.protocol if rule.protocol else 'tcp' }} -m {{ rule.protocol if rule.protocol else 'tcp' }} --dport {{ rule.src_port }} -m state NEW,RELATED -j ACCEPT
+-A FORWARD -d {{ rule.dst_ip }} -p {{ rule.protocol if rule.protocol else 'tcp' }} -m {{ rule.protocol if rule.protocol else 'tcp' }} --dport {{ rule.src_port }} -m --state NEW,RELATED -j ACCEPT
 {%- endif %}
 {%- endfor %}
 -A FORWARD -j NFLOG --nflog-prefix 'FORWARD-DROP'
