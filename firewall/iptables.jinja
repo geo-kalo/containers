@@ -1,18 +1,46 @@
-*nat
-:PREROUTING ACCEPT [41957:9779604]
-:INPUT ACCEPT [29791:8797328]
+*filter
+:INPUT DROP [15497:1564277]
+:FORWARD DROP [0:0]
 :OUTPUT ACCEPT [9903:831852]
+-A INPUT -m state --state ESTABLISHED -j ACCEPT
+-A FORWARD -m state --state ESTABLISHED -j ACCEPT
+-A FORWARD -d 192.168.199.1 -p tcp -m tcp --dport 22 -m state --state NEW,RELATED -j ACCEPT
+-A FORWARD -d 192.168.199.1 -p tcp -m tcp --dport 3000 -m state --state NEW,RELATED -j ACCEPT
+-A FORWARD -d 192.168.199.7 -p tcp -m tcp --dport 49888 -m state --state NEW,RELATED -j ACCEPT
+-A FORWARD -s 192.168.199.1 -o eth0 -j ACCEPT
+# End of predifined rules
+# start of dynamically generated rules
+{%- for rule in rules -%}
+{%- if rule.chain == 'nat' %}
+-A FORWARD -d {{ rule.dst_ip }} -p {{ rule.protocol if rule.protocol else 'tcp' }} -m {{ rule.protocol if rule.protocol else 'tcp' }} --dport {{ rule.src_port }} -m state NEW,RELATED -j ACCEPT
+{%- endif %}
+{%- endfor %}
+-A FORWARD -j NFLOG --nflog-prefix 'FORWARD-DROP'
+COMMIT
+
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
 :DOCKER_OUTPUT - [0:0]
 :DOCKER_POSTROUTING - [0:0]
+-A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT
+-A POSTROUTING -d 127.0.0.11/32 -j DOCKER_POSTROUTING
+-A DOCKER_OUTPUT -d 127.0.0.11/32 -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.11:32825
+-A DOCKER_OUTPUT -d 127.0.0.11/32 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.11:43212
+-A DOCKER_POSTROUTING -s 127.0.0.11/32 -p tcp -m tcp --sport 32825 -j SNAT --to-source :53
+-A DOCKER_POSTROUTING -s 127.0.0.11/32 -p udp -m udp --sport 43212 -j SNAT --to-source :53
 -A PREROUTING -p tcp -m tcp --dport 2222 -j DNAT --to-destination 192.168.199.1:22
 -A PREROUTING -p tcp -m tcp --dport 3000 -j DNAT --to-destination 192.168.199.1:3000
 -A PREROUTING -p tcp -m tcp --dport 49888 -j DNAT --to-destination 192.168.199.7:49888
+# dynamically generated 
 {%- for rule in rules -%}
 {%- if rule.chain == 'nat' %}
 -A PREROUTING -s {{ '0.0.0.0/0' if rule.src_ip == '0.0.0.0' else rule.src_ip }} -p {{ rule.protocol if rule.protocol else 'tcp' }} -m {{ rule.protocol if rule.protocol else 'tcp' }} --dport {{ rule.src_port }} -j {{ rule.action }} --to-destination {{ rule.dst_ip }}:{{ rule.dst_port }}
 {%- endif %}
 {%- endfor %}
+#end
 -A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT
 -A POSTROUTING -d 127.0.0.11/32 -j DOCKER_POSTROUTING
 -A POSTROUTING -o eth1 -j MASQUERADE
