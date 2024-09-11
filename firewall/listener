@@ -25,10 +25,10 @@ while True:
             else:
                 print('No more data from', client_address)
                 command = 'iptables-restore --test /iptables'
-                restoreation = subprocess.run(command, shell=True, capture_output=True, text=True)
+                restoration = subprocess.run(command, shell=True, capture_output=True, text=True)
                 if restoration.returncode == 0:
                     command = 'iptables-restore /iptables'
-                    restoreation = subprocess.run(command, shell=True, capture_output=True, text=True)
+                    restoration = subprocess.run(command, shell=True, capture_output=True, text=True)
                     print(restoration)
                     command = 'truncate -s0 /iptables'
                     wipe = subprocess.run(command, shell=True, capture_output=True, text=True)
