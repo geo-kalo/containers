@@ -40,4 +40,5 @@ while True:
 
 
 
-cat iptables | nc -q0 192.168.199.2 65432 
+#cat iptables | nc -q0 192.168.199.2 65432 
+#episis thelei nc se firewall kai webserice
