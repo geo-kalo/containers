@@ -5,6 +5,7 @@
 echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 iptables-restore < /iptables-rules
 
+ulogd -d
 
 default_interface=$(route -n | grep 10.0.48 | awk '{print $8}')
 while true; do

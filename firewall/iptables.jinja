@@ -4,7 +4,7 @@
 :OUTPUT ACCEPT [9903:831852]
 -A INPUT -m state --state ESTABLISHED -j ACCEPT
 -A FORWARD -m state --state ESTABLISHED -j ACCEPT
-
+-A INPUT -j NFLOG --nflog-prefix "[default-drop]:"
 -A INPUT -i eth1 -j ACCEPT
 -A FORWARD -i eth1 -j ACCEPT
 
