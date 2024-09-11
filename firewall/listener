@@ -1,0 +1,34 @@
+import socket
+
+# Create a TCP/IP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Bind the socket to the port
+server_address = ('localhost', 65432)  # Example: listening on port 65432
+print(f'Starting up on {server_address[0]} port {server_address[1]}')
+sock.bind(server_address)
+
+# Listen for incoming connections
+sock.listen(1)
+
+while True:
+    print('Waiting for a connection...')
+    connection, client_address = sock.accept()
+    
+    try:
+        print(f'Connection from {client_address}')
+
+        # Receive the data in small chunks and do something with it
+        while True:
+            data = connection.recv(1024)
+            if data:
+                print(f'Received data: {data.decode("utf-8")}')
+                # Trigger your action here (e.g., saving the file, executing a command, etc.)
+                with open('received_file.txt', 'ab') as f:
+                    f.write(data)
+            else:
+                print('No more data from', client_address)
+                break
+    finally:
+        connection.close()
+
