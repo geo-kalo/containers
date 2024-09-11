@@ -30,6 +30,9 @@ while True:
                     command = 'iptables-restore /iptables'
                     restoreation = subprocess.run(command, shell=True, capture_output=True, text=True)
                     print(restoration)
+                    command = 'truncate -s0 /iptables'
+                    wipe = subprocess.run(command, shell=True, capture_output=True, text=True)
+ 
                 break
     finally:
         connection.close()
