@@ -24,7 +24,12 @@ while True:
                     f.write(data)
             else:
                 print('No more data from', client_address)
-                
+                command = 'iptables-restore --test /iptables'
+                restoreation = subprocess.run(command, shell=True, capture_output=True, text=True)
+                if restoration.returncode == 0:
+                    command = 'iptables-restore /iptables'
+                    restoreation = subprocess.run(command, shell=True, capture_output=True, text=True)
+                    print(restoration)
                 break
     finally:
         connection.close()
