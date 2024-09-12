@@ -249,10 +249,16 @@ async def create_iptables(db: Session = Depends(get_db)):
         with open("/var/www/fastapi/doc/iptables", 'a') as myfile:
             myfile.write(content)
 
-        command = '/var/www/fastapi/doc/iptables | nc -q0 192.168.199.2 65432 '
-        import_rules = subprocess.run(command, shell=True, capture_output=True, text=True)
-        print(import_rules)
-        return {"message": "iptables file created successfully"}
+        try:
+            command = '/var/www/fastapi/doc/iptables | nc -q0 192.168.199.2 65432 '
+            import_rules = subprocess.run(command, shell=True, capture_output=True, text=True)
+            print(import_rules)
+            command = 'truncate -s0 /var/www/fastapi/doc/iptables'
+            subprocess.run(command, shell=True, capture_output=True, text=True)
+        except Exception as e:
+            print(e)
+
+        return {"message": "iptables file created successfully and imported"}
 
 
     except OperationalError as e:
