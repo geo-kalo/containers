@@ -7,6 +7,7 @@ iptables-restore < /iptables-rules
 
 ulogd -d
 
+python3 /listener.py &
 default_interface=$(route -n | grep {{ pub_net_subnet_1 }} | awk '{print $8}')
 while true; do
 	default_route=$(ip route show default | awk '{print $3}')
