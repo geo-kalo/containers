@@ -29,6 +29,8 @@ while True:
                 if restoration.returncode == 0:
                     command = 'iptables-restore /iptables'
                     restoration = subprocess.run(command, shell=True, capture_output=True, text=True)
+                    command = 'cp /iptables /mnt/'
+                    cp = subprocess.run(command, shell=True, capture_output=True, text=True)
                     print(restoration)
                     command = 'truncate -s0 /iptables'
                     wipe = subprocess.run(command, shell=True, capture_output=True, text=True)
