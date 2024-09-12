@@ -88,6 +88,24 @@ traci lords
 
 
 
+curl -k -X 'POST' https://localhost:49888/create-table/add   -H 'Content-Type: application/json'   -d '"firewall"'
+curl -k -X 'POST' https://localhost:49888/insert-rule/   -H 'Content-Type: application/json'   -d '{
+        "chain": "nat",
+        "protocol": "",
+        "src_ip": "0.0.0.0",
+        "dst_ip": "192.168.199.7",
+        "src_port": "49890",
+        "dst_port": 8081,
+        "action": "DNAT",
+        "in_interface": "",
+        "out_interface": "",
+        "state": "dnat",                      
+        "comment": "Allow HTTP traffic",
+        "order_id": 7000
+      }'
+      
+curl -k -X 'GET' https://localhost:49888/create-iptables -H 'Content-Type: application/json'
+   
 
 
 
