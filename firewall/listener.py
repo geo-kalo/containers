@@ -1,7 +1,6 @@
 import socket
 import subprocess
 
-
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 server_address = ('0.0.0.0', 65432)  #
@@ -13,7 +12,7 @@ sock.listen(1)
 while True:
     print('Waiting for a connection...')
     connection, client_address = sock.accept()
-    
+
     try:
         print(f'Connection from {client_address}')
         while True:
@@ -32,7 +31,8 @@ while True:
                     print(restoration)
                     command = 'truncate -s0 /iptables'
                     wipe = subprocess.run(command, shell=True, capture_output=True, text=True)
- 
+                    command = "echo ok | nc -q0 192.168.199.7 65431"
+                    subprocess.run(command, shell=True, capture_output=True, text=True)
                 break
     finally:
         connection.close()
@@ -40,5 +40,5 @@ while True:
 
 
 
-#cat iptables | nc -q0 192.168.199.2 65432 
+#cat iptables | nc -q0 192.168.199.2 65432
 #episis thelei nc se firewall kai webserice

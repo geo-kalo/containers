@@ -15,6 +15,9 @@ from datetime import datetime
 from sqlalchemy import text, column
 from jinja2 import Environment, FileSystemLoader
 import subprocess
+import socket
+
+
 
 app = FastAPI()
 application = ASGIMiddleware(app)
@@ -48,6 +51,34 @@ class Firewall(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Last update timestamp
     order_id = Column(Integer) #, server_default=text("rule_id"))
     #order_id = Column(Integer, server_default=text("rule_id"))
+
+
+
+
+def my_socket():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_address = ('0.0.0.0', 65431)  #
+    print(f'Starting up on {server_address[0]} port {server_address[1]}')
+    sock.bind(server_address)
+    sock.listen(1)
+    gg = 0
+    while True:
+        print('Waiting for a connection...')
+        connection, client_address = sock.accept()
+        try:
+            print(f'Connection from {client_address}')
+            while True:
+                data = connection.recv(2048)
+                if data:
+                    print(f'Received data: {data.decode("utf-8")}')
+                    if "ok" in data.decode("utf-8"):
+                        print("Firewall reported ok")
+                        gg = 1
+                    break
+        finally:
+            connection.close()
+        if gg == 1:
+            break
 
 
 class Firewallentry(BaseModel):
@@ -255,6 +286,7 @@ async def create_iptables(db: Session = Depends(get_db)):
             print(import_rules)
             command = 'truncate -s0 /var/www/fastapi/doc/iptables'
             subprocess.run(command, shell=True, capture_output=True, text=True)
+            my_socket()
         except Exception as e:
             print(e)
 
