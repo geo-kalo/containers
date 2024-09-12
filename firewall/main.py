@@ -249,7 +249,7 @@ async def create_iptables(db: Session = Depends(get_db)):
         with open("/var/www/fastapi/doc/iptables", 'a') as myfile:
             myfile.write(content)
 
-        command = 'cat iptables | nc -q0 192.168.199.2 65432 '
+        command = '/var/www/fastapi/doc/iptables | nc -q0 192.168.199.2 65432 '
         import_rules = subprocess.run(command, shell=True, capture_output=True, text=True)
         print(import_rules)
         return {"message": "iptables file created successfully"}
