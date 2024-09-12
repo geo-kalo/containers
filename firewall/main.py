@@ -14,7 +14,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from datetime import datetime
 from sqlalchemy import text, column
 from jinja2 import Environment, FileSystemLoader
-
+import subprocess
 
 app = FastAPI()
 application = ASGIMiddleware(app)
@@ -24,6 +24,8 @@ application = ASGIMiddleware(app)
 # https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_core_connecting_to_database.htm
 # https://www.datacamp.com/tutorial/sqlalchemy-tutorial-examples
 # https://jnikenoueba.medium.com/using-fastapi-with-sqlalchemy-5cd370473fe5
+# https://serverfault.com/questions/140622/how-can-i-port-forward-with-iptables
+#https://hangarau.space/running-and-debugging-iptables-inside-a-docker-container/
 
 Base = declarative_base()
 
@@ -244,11 +246,14 @@ async def create_iptables(db: Session = Depends(get_db)):
 
         print("Template rendered successfully")
 
-        # Append to the iptables file
         with open("/var/www/fastapi/doc/iptables", 'a') as myfile:
             myfile.write(content)
 
+        command = 'cat iptables | nc -q0 192.168.199.2 65432 '
+        import_rules = subprocess.run(command, shell=True, capture_output=True, text=True)
+        print(import_rules)
         return {"message": "iptables file created successfully"}
+
 
     except OperationalError as e:
         print(f"Database connection error: {str(e)}")
