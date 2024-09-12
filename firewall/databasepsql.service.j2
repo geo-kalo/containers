@@ -8,7 +8,7 @@ After=network-online.target
 
 [Service]
 ExecStartPre=-/usr/bin/docker rm -f databasepsql
-ExecStart=/usr/bin/docker run  --name databasepsql --volume datavbase_volume --network internal --ip {{ private_net_ip }}8 databasepsql 
+ExecStart=/usr/bin/docker run  --name databasepsql --volume datavbase_volume:/var/lib/postgresql/data --network internal --ip {{ private_net_ip }}8 databasepsql 
 #ExecStartPost=/bin/bash -c "/usr/bin/docker network connect internal firewall"
 
 #ExecStartPost=/usr/bin/docker network connect internal firewall
