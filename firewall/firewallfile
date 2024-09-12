@@ -1,5 +1,5 @@
 FROM	ubuntu
-run 	apt update -y && apt install -y net-tools && apt install -y iputils-ping && apt install -y iproute2 tcpdump iptables ulogd2
+run 	apt update -y && apt install -y net-tools && apt install -y iputils-ping && apt install -y iproute2 tcpdump iptables ulogd2 python3
 #run     echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
 copy 	resolv.conf /
 copy	ulogd.conf  /etc/ulogd.conf
