@@ -1,5 +1,6 @@
 import socket
 import subprocess
+import time
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -32,7 +33,8 @@ while True:
                     command = 'truncate -s0 /iptables'
                     wipe = subprocess.run(command, shell=True, capture_output=True, text=True)
                     command = "echo ok | nc -q0 192.168.199.7 65431"
-                    subprocess.run(command, shell=True, capture_output=True, text=True)
+                    res = subprocess.run(command, shell=True, capture_output=True, text=True)
+                    print(res)
                 break
     finally:
         connection.close()

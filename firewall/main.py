@@ -16,6 +16,8 @@ from sqlalchemy import text, column
 from jinja2 import Environment, FileSystemLoader
 import subprocess
 import socket
+import time
+
 
 
 
@@ -57,7 +59,7 @@ class Firewall(Base):
 
 def my_socket():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_address = ('0.0.0.0', 65431)  #
+    server_address = ('0.0.0.0', 65431)
     print(f'Starting up on {server_address[0]} port {server_address[1]}')
     sock.bind(server_address)
     sock.listen(1)
@@ -74,11 +76,16 @@ def my_socket():
                     if "ok" in data.decode("utf-8"):
                         print("Firewall reported ok")
                         gg = 1
+                    else:
+                        print("Firewall reported not ok")
+                        gg = 1
                     break
         finally:
             connection.close()
         if gg == 1:
             break
+        time.sleep(10)
+        break
 
 
 class Firewallentry(BaseModel):

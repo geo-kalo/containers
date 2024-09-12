@@ -1,6 +1,7 @@
 FROM	ubuntu
 run	apt update -y && apt install -y apache2  libapache2-mod-wsgi-py3 iproute2 python3-full python3-pip python3-venv virtualenv curl net-tools vim postgresql-client procps netcat-traditional
 
+
 copy activate_virtual_env.sh .
 copy packets .
 copy main.py .
