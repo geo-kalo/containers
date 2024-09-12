@@ -6,5 +6,6 @@ copy	ulogd.conf  /etc/ulogd.conf
 run     touch /var/log/ulog/firewall
 copy    iptables-rules /
 copy 	entrypoint.sh /
+copy    listener.py /
 run 	chmod u+x /entrypoint.sh
 entrypoint  /entrypoint.sh
