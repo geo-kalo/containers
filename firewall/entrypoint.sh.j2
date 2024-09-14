@@ -22,7 +22,7 @@ default_interface=$(route -n | grep {{ pub_net_subnet_1 }} | awk '{print $8}')
 while true; do
 	default_route=$(ip route show default | awk '{print $3}')
 	if [ "$default_route" != "{{ pub_net_gateway }}" ]; then
-		ip route replace default via {{ pub_net_gateway }} dev eth0
+		ip route replace default via {{ pub_net_gateway }} dev $default_interface
 	fi
 	sleep 10
 done
