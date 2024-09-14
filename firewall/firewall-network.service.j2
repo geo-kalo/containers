@@ -1,0 +1,14 @@
+[Unit]
+Description=Add internal net to firewall docker
+After=firewall.service
+Requires=firewall.service
+
+[Service]
+ExecStartPre=/bin/sleep 10
+#Type=oneshot
+ExecStart=/usr/bin/docker network connect internal --ip {{ private_net_ip }}2 firewall
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+

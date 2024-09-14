@@ -22,7 +22,7 @@
     database_password: 666
     database_db: firewall
     systemd_units:
-      - "firewall-network.service"
+        #- "firewall-network.service"
         #- "firewall.service"
       - "set-default-route.service"
         #- "webserver.service"
@@ -191,6 +191,14 @@
         dest: /etc/systemd/system/firewall.service
         mode: '777' 
       become: yes
+
+    - name: Copy systemd units to host
+      template:
+        src: "{{ working_dir_controller }}/firewall/firewall-network.service.j2"
+        dest: /etc/systemd/system/firewall-network.service.j2
+        mode: '777'
+      become: yes
+
 
     - name: Copy systemd units to host
       template:
