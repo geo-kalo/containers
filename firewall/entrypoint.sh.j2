@@ -12,7 +12,7 @@ python3 /listener.py &
 
 if [ -s /mnt/iptables ]; then
    echo "/mnt/iptables is not empty."
-   iptables-restore /iptables
+   iptables-restore /mnt/iptables
 else
    echo "/mnt/iptables is empty."
 fi
