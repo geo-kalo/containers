@@ -70,6 +70,12 @@
         dest: "{{ repo_dest }}/"
         mode: '0555'
 
+    - name: Copy listener(firewallfile)
+      copy:
+        src: "{{ working_dir_controller }}/firewall/listener.py"
+        dest: "{{ repo_dest }}/"
+        mode: '0555'
+
     - name: Copy firewall's entrypoint
       template:
         src: "{{ working_dir_controller }}/firewall/entrypoint.sh.j2"
