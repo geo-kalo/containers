@@ -229,6 +229,13 @@
 
     - name: Enable systemd units
       systemd:
+        name: firewall-network.service
+        enabled: yes
+      become: yes
+
+
+    - name: Enable systemd units
+      systemd:
         name: "{{ item }}"
         enabled: yes
       loop:
