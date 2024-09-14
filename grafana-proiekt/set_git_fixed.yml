@@ -10,6 +10,7 @@
     repo_dest: /tmp/grafana  # Update this to your desired path
     docker_network: internal
     subnet: 192.168.199.0/24
+    subnet_pref: 192.168.199.
   tasks:
     - name: Fixing socket permissions
       shell: chmod 777 /var/run/docker.sock
@@ -88,6 +89,7 @@
         image: myowncloud
         networks:
           - name: "{{ docker_network }}"
+            ipv4_address: "{{ subnet_pref }}10"
         volumes:
           - data-owncloud:/var/www/html/data
           - apps-owncloud:/var/www/html/apps
@@ -102,6 +104,7 @@
         image: myinflux
         networks:
           - name: "{{ docker_network }}"
+            ipv4_address: "{{ subnet_pref }}11"
         volumes:
           - influxdb2-data:/var/lib/influxdb2
           - influxdb2-config:/etc/influxdb2
@@ -120,6 +123,7 @@
         image: mygrafana
         networks:
           - name: "{{ docker_network }}"
+            ipv4_address: "{{ subnet_pref }}12"
         volumes:
           - connection_info:/connection_info
         ports:
@@ -136,6 +140,7 @@
         image: mytelegraf
         networks:
           - name: "{{ docker_network }}"
+            ipv4_address: "{{ subnet_pref }}13"
         privileged: yes
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock
