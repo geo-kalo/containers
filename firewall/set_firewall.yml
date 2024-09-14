@@ -195,7 +195,7 @@
     - name: Copy systemd units to host
       template:
         src: "{{ working_dir_controller }}/firewall/firewall-network.service.j2"
-        dest: /etc/systemd/system/firewall-network.service.j2
+        dest: /etc/systemd/system/firewall-network.service
         mode: '777'
       become: yes
 
