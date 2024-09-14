@@ -233,6 +233,11 @@
         enabled: yes
       become: yes
 
+    - name: Enable systemd units
+      systemd:
+        name: firewall.service
+        enabled: yes
+      become: yes
 
     - name: Enable systemd units
       systemd:
