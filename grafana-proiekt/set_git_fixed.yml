@@ -189,7 +189,7 @@
       loop:
               - docker exec -i postgres-guacamole psql -U geo -d guacamole_db -c "CREATE USER geo WITH PASSWORD '666';"
               - docker exec -i postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO geo;"
-              - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public TO geo;"
+              - docker exec -i postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public TO geo;"
 
     - name: Run the Guacamole container
       docker_container:
