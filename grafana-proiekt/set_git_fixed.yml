@@ -205,7 +205,7 @@
                       - "8080:8080"
               env:
                       GUACD_HOSTNAME: guacd
-                      GUACD_PORT: 4822
+                      GUACD_PORT: "4822"
                       POSTGRESQL_PASSWORD: "666"
                       POSTGRESQL_USER: geo
                       POSTGRESQL_DATABASE: guacamole_db
