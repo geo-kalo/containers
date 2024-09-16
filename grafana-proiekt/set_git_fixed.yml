@@ -225,7 +225,7 @@
               restart_policy: always
               ports:
                       - "6080:80"
-                      - - "5900:5900"
+                      - "5900:5900"
               networks:
                       - name:  "{{ docker_network }}"
                         ipv4_address: "{{ subnet_pref }}17"
