@@ -177,50 +177,54 @@
                       - name: "{{ docker_network }}"
                         ipv4_address: "{{ subnet_pref }}15"
 
-     - name: create initb.sql
-       shell: docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgresql > /tmp/initdb.sql
+    - name: create initb.sql
+      shell: docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgresql > /tmp/initdb.sql
 
-     - name: Create database user
-       shell: "{{ item }}"
-       loop:
-               - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "CREATE USER geo WITH PASSWORD '666';"
-               - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO geo;"
-               - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public TO geo;"
-
-     - name: Run the Guacamole container
-       docker_container:
-               name: guacamole
-               image: guacamole/guacamole
-               state: started
-               restart_policy: always
-               ports:
-                       - "8080:8080"
-               env:
-                       GUACD_HOSTNAME: guacd
-                       GUACD_PORT: 4822
-                       POSTGRESQL_PASSWORD: "666"
-                       POSTGRESQL_USER: geo
-                       POSTGRESQL_DATABASE: guacamole_db
-                       POSTGRESQL_HOSTNAME: postgres-guacamole
-               networks:
-                       - name:  "{{ docker_network }}"
-                         ipv4_address: "{{ subnet_pref }}16"
+    - name: Import database
+      shell: cat /tmp/initdb.sql | docker exec -i postgres-guacamole psql -U geo -d guacamole_db
 
 
+    - name: Create database user
+      shell: "{{ item }}"
+      loop:
+              - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "CREATE USER geo WITH PASSWORD '666';"
+              - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO geo;"
+              - docker exec -it postgres-guacamole psql -U geo -d guacamole_db -c "GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public TO geo;"
+
+    - name: Run the Guacamole container
+      docker_container:
+              name: guacamole
+              image: guacamole/guacamole
+              state: started
+              restart_policy: always
+              ports:
+                      - "8080:8080"
+              env:
+                      GUACD_HOSTNAME: guacd
+                      GUACD_PORT: 4822
+                      POSTGRESQL_PASSWORD: "666"
+                      POSTGRESQL_USER: geo
+                      POSTGRESQL_DATABASE: guacamole_db
+                      POSTGRESQL_HOSTNAME: postgres-guacamole
+              networks:
+                      - name:  "{{ docker_network }}"
+                        ipv4_address: "{{ subnet_pref }}16"
 
 
-     - name: Run the Ubuntu VNC container 
-       docker_container:
-               name: ubvnc
-               image: dorowu/ubuntu-desktop-lxde-vnc:bionic
-               state: started
-               restart_policy: always
-               ports:
-                       - "6080:80"
-                       - - "5900:5900"
-               networks:
-                       - name:  "{{ docker_network }}"
-                         ipv4_address: "{{ subnet_pref }}17"
+
+
+    - name: Run the Ubuntu VNC container 
+      docker_container:
+              name: ubvnc
+              image: dorowu/ubuntu-desktop-lxde-vnc:bionic
+              state: started
+              restart_policy: always
+              ports:
+                      - "6080:80"
+                      - - "5900:5900"
+              networks:
+                      - name:  "{{ docker_network }}"
+                        ipv4_address: "{{ subnet_pref }}17"
 
 
 
