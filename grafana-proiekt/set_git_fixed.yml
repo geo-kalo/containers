@@ -180,6 +180,9 @@
     - name: create initb.sql
       shell: docker run --rm guacamole/guacamole /opt/guacamole/bin/initdb.sh --postgresql > /tmp/initdb.sql
 
+    - name: sleep 10
+      shell: sleep 10
+
     - name: Import database
       shell: cat /tmp/initdb.sql | docker exec -i postgres-guacamole psql -U geo -d guacamole_db
 
