@@ -18,6 +18,9 @@
 -A FORWARD -d 192.168.199.6/32 -p tcp -m tcp --dport 80 -m state --state NEW,RELATED -j ACCEPT
 -A FORWARD -d 192.168.199.6/32 -p tcp -m tcp --dport 5900 -m state --state NEW,RELATED -j ACCEPT
 -A FORWARD -d 192.168.199.20/32 -p tcp -m tcp --dport 80 -m state --state NEW,RELATED -j ACCEPT
+-A FORWARD -d 192.168.199.20/32 -p tcp -m tcp --dport 3000 -m state --state NEW,RELATED -j ACCEPT
+-A FORWARD -d 192.168.199.20/32 -p tcp -m tcp --dport 3001 -m state --state NEW,RELATED -j ACCEPT
+
 
 -A FORWARD -j NFLOG --nflog-prefix "\'FORWARD-DROP\'"
 COMMIT
@@ -39,6 +42,10 @@ COMMIT
 -A PREROUTING -p tcp -m tcp --dport 6080 -j DNAT --to-destination 192.168.199.6:80
 -A PREROUTING -p tcp -m tcp --dport 5900 -j DNAT --to-destination 192.168.199.6:5900
 -A PREROUTING -p tcp -m tcp --dport 8765 -j DNAT --to-destination 192.168.199.20:80
+-A PREROUTING -p tcp -m tcp --dport 9998 -j DNAT --to-destination 192.168.199.20:3000
+-A PREROUTING -p tcp -m tcp --dport 9999 -j DNAT --to-destination 192.168.199.20:3001
+
+
 
 
 -A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT
@@ -51,10 +58,12 @@ COMMIT
 -A DOCKER_OUTPUT -d 127.0.0.11/32 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.11:43212
 -A DOCKER_OUTPUT -d 127.0.0.11/32 -p tcp -m tcp --dport 53 -j DNAT --to-destination 127.0.0.11:40939
 -A DOCKER_OUTPUT -d 127.0.0.11/32 -p udp -m udp --dport 53 -j DNAT --to-destination 127.0.0.11:33793
+
 -A DOCKER_POSTROUTING -s 127.0.0.11/32 -p tcp -m tcp --sport 32825 -j SNAT --to-source :53
 -A DOCKER_POSTROUTING -s 127.0.0.11/32 -p udp -m udp --sport 43212 -j SNAT --to-source :53
 -A DOCKER_POSTROUTING -s 127.0.0.11/32 -p tcp -m tcp --sport 40939 -j SNAT --to-source :53
 -A DOCKER_POSTROUTING -s 127.0.0.11/32 -p udp -m udp --sport 33793 -j SNAT --to-source :53
+
 COMMIT
 # Completed on Mon Sep 16 17:43:59 2024
 
