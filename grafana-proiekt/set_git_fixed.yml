@@ -233,4 +233,20 @@
 
 
 
+    - name: Run speed test server
+      docker_container:
+        name: speedtest
+        image: openspeedtest/latest
+        state: started
+        ports:
+          - "9998:3000"
+          - "9999:3001"
+        networks:
+          - name:  "{{ docker_network }}"
+            ipv4_address: "{{ subnet_pref }}20"
+        env:
+          ENABLE_LETSENCRYPT: True
+          DOMAIN_NAME: "geo@geo.gr"
 
+
+  
