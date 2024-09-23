@@ -245,8 +245,8 @@
           - name:  "{{ docker_network }}"
             ipv4_address: "{{ subnet_pref }}20"
         env:
-          ENABLE_LETSENCRYPT: True
+          ENABLE_LETSENCRYPT: "True"
           DOMAIN_NAME: "geo@geo.gr"
-
+          USER_EMAIL: "geo@geo.gr"
 
   
