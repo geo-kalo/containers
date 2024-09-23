@@ -38,7 +38,7 @@ COMMIT
 -A PREROUTING -p tcp -m tcp --dport 6080 -j DNAT --to-destination 192.168.199.6:80
 -A PREROUTING -p tcp -m tcp --dport 6080 -j DNAT --to-destination 192.168.199.6:80
 -A PREROUTING -p tcp -m tcp --dport 5900 -j DNAT --to-destination 192.168.199.6:5900
--A PREROUTING -p tcp -m tcp --dport 8765 -j DNAT --to-destination 192.168.199.6:8765
+-A PREROUTING -p tcp -m tcp --dport 8765 -j DNAT --to-destination 192.168.199.20:8765
 
 
 -A OUTPUT -d 127.0.0.11/32 -j DOCKER_OUTPUT
