@@ -259,7 +259,7 @@
         restart_policy: always
         networks:
           - name: "{{ docker_network }}"
-            ipv4_address: "{{ subnet_pref }}54"
+            ipv4_address: "{{ subnet_pref }}53"
         env:
           WEBPASSWORD: "666"
           TZ: "Europe/Athens"
