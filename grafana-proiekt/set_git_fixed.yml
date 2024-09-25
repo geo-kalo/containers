@@ -81,6 +81,7 @@
         - connection_info
         - influxdb2-config
         - influxdb2-data
+        - pihole
 
     - name: Run owncloud container
       docker_container:
@@ -250,3 +251,23 @@
           USER_EMAIL: "geo@geo.gr"
 
   
+    - name: Run pihole
+      docker_container:
+        name: pihole
+        image: pihole/pihole:latest
+        state: started
+        restart_policy: always
+        networks:
+          - name: "{{ docker_network }}"
+            ipv4_address: "{{ subnet_pref }}54"
+        env:
+          WEBPASSWORD: "666"
+          TZ: "Europe/Athens"
+        volumes:
+          - pihole:/etc/pihole 
+          - /etc/dnsmasq.d:/etc/dnsmasq.d
+
+
+
+
+
