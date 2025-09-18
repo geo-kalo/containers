@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update User Packets</title>
+    <script>
+        let users = []; // Array to hold fetched users
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/users/'); // Make sure this endpoint returns user data
+                users = await response.json();
+                const usernameSelect = document.getElementById('username');
+
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.username; // Ensure the value is set
+                    option.textContent = user.username; // Display name in the dropdown
+                    usernameSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        function populateFields() {
+            const selectedUser = document.getElementById('username').value;
+            const user = users.find(u => u.username === selectedUser);
+            
+            if (user) {
+                document.getElementById('hostname').value = user.hostname; // Populate hostname
+                document.getElementById('password').value = user.password; // Populate password
+                document.getElementById('distro').value = user.distro;
+            }
+        }
+
+        function addPacketInput() {
+            const packetsDiv = document.getElementById('packets');
+            const newPacket = document.createElement('input');
+            newPacket.setAttribute('type', 'text');
+            newPacket.setAttribute('name', 'packets'); // Ensure the name is 'packets'
+            newPacket.setAttribute('placeholder', 'Enter packet');
+            packetsDiv.appendChild(newPacket);
+            packetsDiv.appendChild(document.createElement('br'));
+        }
+
+        window.onload = fetchUsers; // Fetch users when the page loads
+    </script>
+</head>
+<body>
+    <h2>Modify User Packets</h2>
+    <form action="/update-packets/" method="POST">
+        <label for="username">Username:</label><br>
+        <select id="username" name="user_name" required onchange="populateFields()">
+            <option value="" disabled selected>Select a user</option>
+            <!-- Options will be populated by JavaScript -->
+        </select><br><br>
+
+        <label for="hostname">Hostname:</label><br>
+        <input type="text" id="hostname" name="hostname"><br><br> <!-- Remove readonly -->
+
+        <label for="distro">distro:</label><br>
+        <input type="text" id="distro" name="distro"><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br><br> <!-- Remove readonly -->
+
+        <label for="packets">Packets:</label><br>
+        <div id="packets"></div>
+        <button type="button" onclick="addPacketInput()">Add Packet</button><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

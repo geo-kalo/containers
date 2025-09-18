@@ -1,0 +1,12 @@
+FROM docker.io/library/postgres
+#apt-get update && apt-get install -y iproute2 net-tools
+
+volume    /var/lib/postgresql/data
+ENV       POSTGRES_PASSWORD=666
+ENV       POSTGRES_USER=admin
+ENV       POSTGRES_DB=users
+
+
+volume /var/lib/postgresql/data
+entrypoint /usr/local/bin/docker-entrypoint.sh postgres
+

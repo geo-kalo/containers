@@ -1,0 +1,41 @@
+FROM debian:latest
+
+RUN apt-get update && \
+    apt install -y dnsmasq && \
+    apt install -y net-tools tcpdump vim iproute2 iputils-ping dnsutils apache2 libapache2-mod-wsgi-py3 python3-full python3-pip python3-venv virtualenv curl net-tools vim postgresql-client procps netcat-traditional
+  
+
+RUN             echo "deb http://archive.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list
+RUN             apt-get update && apt-get -t buster-backports install tftp-hpa -y
+
+
+COPY            activate_virtual_env.sh .
+RUN  		mkdir -p /srv/tftp && mkdir -p /var/www/html/ubuntu && mkdir /api && mkdir /venv && chmod u+x /activate_virtual_env.sh && mkdir /api/static && mkdir /api/templates		
+#RUN		chmod 777 /var/lib/misc/dnsmasq.leases
+#mkdir -p /srv/tftp && mkdir /venv && chmod u+x /activate_virtual_env.sh && mkdir -p /var/www/html/fastapi/doc/ && mkdir -p /var/www/html/ubuntu && rm -f /etc/apache2/sites-available/* && rm -f /etc/apache2/sites-enabled/000-default.conf
+#VOLUME  	/etc/dnsmasq.conf
+VOLUME		/srv/tftp/
+VOLUME		/srv/tftp-debian
+
+COPY		tftp-root-selection.sh /
+COPY		basefile.j2 /api/templates/
+COPY		tftp-base.j2 /api/templates/
+COPY            debian-base.j2 /api/templates/
+COPY            configuration_create.html /api/static
+COPY		delete_packet_per_user.html /api/static
+COPY		add_user.html /api/static
+COPY            delete_user.html /api/static
+COPY            index.html /api/static
+COPY            update_user.html /api/static
+COPY		localrepo.conf /etc/apache2/sites-enabled/
+COPY            packets .
+COPY            main.py /api/main.py
+COPY            virtual-fastapi.conf /etc/apache2/sites-enabled/
+#COPY            ports.conf /etc/apache2/ports.conf
+
+USER		root
+COPY		entrypoint-dhcp.sh /
+RUN		chmod 777 /entrypoint-dhcp.sh
+
+
+ENTRYPOINT 	sh /entrypoint-dhcp.sh

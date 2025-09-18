@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete User Packet</title>
+    <script>
+        let users = []; // Array to hold fetched users
+        let packets = {}; // Dictionary to hold packets for each user
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/users/'); // Fetch user data
+                if (!response.ok) {
+                    throw new Error(`Error fetching users: ${response.statusText}`);
+                }
+                
+                users = await response.json();
+                const usernameSelect = document.getElementById('username');
+
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.username; // Ensure the value is set
+                    option.textContent = user.username; // Display name in the dropdown
+                    usernameSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        async function fetchPacketsForUser(userName) {
+            try {
+                const response = await fetch(`/user-packets/${userName}`);
+                if (!response.ok) {
+                    throw new Error(`Error fetching packets: ${response.statusText}`);
+                }
+                
+                packets[userName] = await response.json();
+                updatePacketSelect(userName);
+            } catch (error) {
+                console.error('Error fetching packets:', error);
+            }
+        }
+
+        function updatePacketSelect(userName) {
+            const packetSelect = document.getElementById('packet_name');
+            packetSelect.innerHTML = ''; // Clear previous options
+
+            if (packets[userName]) {
+                packets[userName].forEach(packet => {
+                    const option = document.createElement('option');
+                    option.value = packet.packet_name; // Ensure the value is set
+                    option.textContent = packet.packet_name; // Display name in the dropdown
+                    packetSelect.appendChild(option);
+                });
+            }
+        }
+
+        async function deleteUserPacket(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const username = document.getElementById('username').value;
+            const packetName = document.getElementById('packet_name').value;
+
+            if (!username || !packetName) {
+                alert("Please select a user and a packet to delete.");
+                return;
+            }
+
+            const response = await fetch(`/delete-user-packet/${username}/${packetName}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message); // Show success message
+                
+                // Clear the packets dropdown
+                const packetSelect = document.getElementById('packet_name');
+                packetSelect.innerHTML = '<option value="" disabled selected>Select a packet</option>'; // Reset dropdown
+                
+                // Refetch packets for the selected user
+                await fetchPacketsForUser(username);
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.detail}`);
+            }
+        }
+
+        window.onload = function() {
+            fetchUsers(); // Fetch users when the page loads
+            document.getElementById('username').addEventListener('change', function() {
+                fetchPacketsForUser(this.value);
+            });
+        };
+    </script>
+</head>
+<body>
+    <h2>Delete User Packet</h2>
+    <form onsubmit="deleteUserPacket(event)">
+        <label for="username">Username:</label><br>
+        <select id="username" name="user_name" required>
+            <option value="" disabled selected>Select a user</option>
+            <!-- Options will be populated by JavaScript -->
+        </select><br><br>
+
+        <label for="packet_name">Packet:</label><br>
+        <select id="packet_name" name="packet_name" required>
+            <option value="" disabled selected>Select a packet</option>
+            <!-- Options will be populated based on selected user -->
+        </select><br><br>
+
+        <button type="submit">Delete Packet</button>
+    </form>
+</body>
+</html>

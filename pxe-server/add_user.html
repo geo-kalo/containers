@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User and Packets</title>
+    <script>
+        function addPacketInput() {
+            const packetsDiv = document.getElementById('packets');
+            const newPacket = document.createElement('input');
+            newPacket.setAttribute('type', 'text');
+            newPacket.setAttribute('name', 'packets');
+            newPacket.setAttribute('placeholder', 'Enter packet');
+            packetsDiv.appendChild(newPacket);
+            packetsDiv.appendChild(document.createElement('br'));
+        }
+    </script>
+</head>
+<body>
+    <h2>Add User and Packets</h2>
+    <form action="/insert-user-page/" method="POST">
+        <label for="hostname">Hostname:</label><br>
+        <input type="text" id="hostname" name="hostname" required><br><br>
+
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="distro">distro:</label><br>
+        <input type="text" id="distro" name="distro" required><br><br>
+
+        <label for="packets">Packets:</label><br>
+        <div id="packets">
+            <input type="text" name="packets" placeholder="Enter packet"><br>
+        </div>
+        <button type="button" onclick="addPacketInput()">Add More Packets</button><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
