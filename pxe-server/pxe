@@ -39,7 +39,8 @@ docker network create -d macvlan \
 
 
 
-
+to dhcp akouei sto ens19 kai prepei na exei ip ston host:
+ ip addr add 192.168.199.1/24 dev ens19
 
 
 
