@@ -26,10 +26,16 @@ to alo einai to 192.168.199.0/24 opou dino kai dhcp range kai einai brindge se m
 
 
 episis o server pou tha hostari ta containers prepei na exei:
-root@container-server-prox2:~# sudo sysctl -w net.ipv4.ip_forward=1
+ sudo sysctl -w net.ipv4.ip_forward=1
 net.ipv4.ip_forward = 1
-root@container-server-prox2:~# iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE
-root@container-server-prox2:~# 
+ iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE
+
+sudo iptables -I FORWARD 1 -i ens19 -j ACCEPT
+
+
+sudo iptables -I FORWARD 2 -o ens19 -j ACCEPT
+
+
 
 docker network create -d macvlan \
   --subnet=10.0.48.0/24 \
