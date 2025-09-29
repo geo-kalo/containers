@@ -1,174 +1,155 @@
-network:
-sudo docker network inspect pub_net
-            "Config": [
-                {
-                    "Subnet": "10.0.48.0/24",
-                    "Gateway": "10.0.48.1"
-                }
-            ]
+docker network create -d macvlan    -o parent=ens19 private_net
+docker build -f dhcpdfile  -t dhcpd .
 
-Auto dioti otan exo macvlan kai bridge o host den mporei directly na milisei me ta container. Edo exo thema dioti o webserver einai tftp/dhcp  kai xrisimopiei to idio diktio tou host.
-i need --network host of dhcp so host pc can not ping ips in macvlan
 
-# 1. Create a macvlan shim interface bound to ens18
-sudo ip link add pub_net-shim link ens18 type macvlan mode bridge
+/home/geo/dhcpd.conf
 
-# 2. Assign it an IP from the pub_net subnet
-sudo ip addr add 10.0.48.250/24 dev pub_net-shim
 
-# 3. Bring it up
-sudo ip link set pub_net-shim up
+https://superuser.com/questions/1736221/why-cant-i-ping-a-docker-container-from-the-host-when-using-ipvlan-in-l3-mode
 
 
-Ousiastika thelo 2 diktia.
-to ena einai tou host kai to kanei use of webserver container. Ston proxmonx einai bridge sto ens18 to exoteriko net
-to alo einai to 192.168.199.0/24 opou dino kai dhcp range kai einai brindge se mia ali karta diktiou tou proxmox. Opios pesei pano akou ton dhcp sercer..
+docker run  -d -it --name dhcpd-server --network host   --cap-add=NET_ADMIN  -v /home/geo/dhcpd.conf:/etc/dhcp/dhcpd.conf dhcpd
 
 
-episis o server pou tha hostari ta containers prepei na exei:
- sudo sysctl -w net.ipv4.ip_forward=1
-net.ipv4.ip_forward = 1
- iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE
 
-sudo iptables -I FORWARD 1 -i ens19 -j ACCEPT
+docker run  -d -it --name dnsmasq-server --network host   --cap-add=NET_ADMIN  -v /home/geo/dnsmasq.conf:/etc/dnsmasq.conf -v /localrepo/:/var/www/html/ubuntu dhcpd
 
+docker run -d -ti --name test  --cap-add=NET_ADMIN --network private_net  test  tail -f /dev/null
 
-sudo iptables -I FORWARD 2 -o ens19 -j ACCEPT
+ deb [trusted=yes] http://localrepo.net/ubuntu/ubuntu-mirror jammy main restricted universe multiverse
+ 
+sudo ip addr add 192.168.199.1/28 dev ens19
 
 
 
-docker network create -d macvlan \
-  --subnet=10.0.48.0/24 \
-  --gateway=10.0.48.1 \
-  -o parent=ens18 \
-  pub_net
+https://www.reddit.com/r/sysadmin/comments/16lv7zv/pxe_boot_getting_dismissed/
 
+https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#
+http://archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/
 
 
-to dhcp akouei sto ens19 kai prepei na exei ip ston host:
- ip addr add 192.168.199.1/24 dev ens19
 
+docker run  -d -it --name dhcpd-server --network host   --cap-add=NET_ADMIN  -v /home/geo/dnsmasq.conf:/etc/dnsmasq.conf -v /localrepo/:/var/www/html/ubuntu dhcpd
 
 
+Ctrl + Alt + F2
 
+METALO
+sudo ip addr add 192.168.199.1/34 dev ens19
+apt install cd-boot-images-amd64
+ln -s /usr/share/cd-boot-images-amd64 /srv/tftp/boot-amd64
+sudo iptables -A FORWARD -i ens18 -o ens19 -j ACCEPT
+sudo iptables -A FORWARD -i ens19 -o ens18 -j ACCEPT
+sudo iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE
 
+https://help.ubuntu.com/community/Debmirror  ---> create local repo
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+nano /etc/resolv.conf #namesercer 127.0.0.53
 
 
+https://ubuntu.com/server/docs/how-to-netboot-the-server-installer-on-amd64
 
+sudo crontab -e
+00  01  *  *  *  /usr/bin/apt-mirror
 
+tcpdump -i ens18 -n -vv port 67 or port 68
 
 
 
 
 
-database:
 
-Prepei na exo ftiaxei apo prin to database users. kai na exo volumes gia na einai persistent. exo endpoint /create-table gia na ftiaxi osous pinakes thelo
-create image: cd /home/geo/database
-sudo docker build -t database -f databasefile .
-sudo /usr/bin/docker run  -d --name database --volume datavbase_volume:/var/lib/postgresql/data --network pub_net --ip 10.0.48.100 database 
+s0ssss vazei ta klidia ena lipoun
+apt-get install --reinstall ubuntu-keyring
 
+aptitude
+https://support.plesk.com/hc/en-us/articles/12376960874903-Unable-to-install-Imunify360-in-Plesk-The-value-buster-backports-is-invalid-for-APT
 
 
-webserver:
-cd /home/geo/webserver
-sudo docker build -t webserver:latest -f  dnsmasqfile-web .
-docker run  -d -it --name webserver --network host   --cap-add=NET_ADMIN  -v /home/geo/dnsmasq.conf:/etc/dnsmasq.conf -v /localrepo/:/var/www/html/ubuntu -v /srv/tftp:/srv/tftp webserver
 
 
-prepei na exo ena local repo apo cd.
-sto host mou to exo /localrepo kai ginete mount sto webserver container.
-sto host mou exo kai /srv/tftp  -> to kano mount sto webserver container. edo exo oti xriazete gia na kanei boot o client.
+ curl -k -X 'POST' 'https://10.0.48.52/insert-user/' -H 'Content-Type: application/json' -d '{
+  "user": {
+    "hostname": "geo",
+    "password": "xxxxdsfsdfx",
+    "username": "geo"
+  },
+  "list_of_packet": {
+    "packets": [
+      {
+        "packet_name": "packet_1",
+        "user_id": 666 
+      },
+      {
+        "packet_name": "packet_2",
+        "user_id": 666 
+      }
+    ]
+}'}
 
-root@container-server-prox2:/srv/tftp# ls -la 
-total 88120
-drwxr-xr-x 3 root nogroup     4096 Oct  9  2024 .
-drwxr-xr-x 1 root root        4096 Sep 18 08:42 ..
-lrwxrwxrwx 1 root root          31 Oct  9  2024 boot-amd64 -> /usr/share/cd-boot-images-amd64
--rwxrwxrwx 1 root root           0 Oct  9  2024 bootx64.efi
--rwxrwxrwx 1 root root    75104318 Oct  9  2024 initrd
--rwxrwxrwx 1 root root      118676 Sep 16 15:40 ldlinux.c32
--rwxrwxrwx 1 root root       42392 Sep 16 15:40 pxelinux.0
-drwxrwxrwx 2 root root        4096 Oct 10  2024 pxelinux.cfg   -> edo exo ta config
--rwxrwxrwx 1 root root    14948744 Oct  9  2024 vmlinuz
-root@container-server-prox2:/srv/tftp# 
 
 
 
 
 
 
-Ara thelo mono dio containersroot@container-server-prox2:/srv/tftp# ls -la 
-total 88120
-drwxr-xr-x 3 root nogroup     4096 Oct  9  2024 .
-drwxr-xr-x 1 root root        4096 Sep 18 08:42 ..
-lrwxrwxrwx 1 root root          31 Oct  9  2024 boot-amd64 -> /usr/share/cd-boot-images-amd64
--rwxrwxrwx 1 root root           0 Oct  9  2024 bootx64.efi
--rwxrwxrwx 1 root root    75104318 Oct  9  2024 initrd
--rwxrwxrwx 1 root root      118676 Sep 16 15:40 ldlinux.c32
--rwxrwxrwx 1 root root       42392 Sep 16 15:40 pxelinux.0
-drwxrwxrwx 2 root root        4096 Oct 10  2024 pxelinux.cfg
--rwxrwxrwx 1 root root    14948744 Oct  9  2024 vmlinuz
-root@container-server-prox2:/srv/tftp# 
-
-
-
-
-
-
-ara o webserver trexei enan apache2
-kai ton fastapi kati apo to /api.
-kato apo to /api tha vro ta static opou einai ta html/javascript
-kai ta templates.
-
-oti einai na ftiaxtei px auto-installer file tha paei kato apo /var/www/html/ubuntu
-to dnsmsq.conf alazei mono otan alazei to distro gia na dosei alo tfpt path root.
-trexei ena script apo to entrypoint pou kanei detect alages sto file gia na  kanei restart to service. o logos einai :
-[Thu Sep 18 08:50:16.153048 2025] [wsgi:error] [pid 76:tid 331] CompletedProcess(args='/etc/init.d/dnsmasq force-reload', returncode=1, stdout='Restarting DNS forwarder and DHCP server: dnsmasq failed!\\n', stderr='start-stop-daemon: warning: failed to kill 31: Operation not permitted\\n\\ndnsmasq: failed to bind DHCP server socket: Permission denied\\n')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-test: the xrisimopiite apla einai gia test
-
-sudo docker run -d --name database \
-  --volume datavbase_volume:/var/lib/postgresql/data \
-  --network internal \
-  --ip 192.168.199.100 \
-  database;
-
-sudo docker network connect --ip 10.0.48.100 pub_net database
-
-
-sudo docker run -d -it --name webserver \
-  --network internal \
-  --ip 192.168.199.101 \
-  --cap-add=NET_ADMIN \
-  -v /home/geo/dnsmasq.conf:/etc/dnsmasq.conf \
-  -v /localrepo/:/var/www/html/ubuntu \
-  webserver;
+ curl -k -X 'POST' 'https://10.0.48.52/insert-user/' -H 'Content-Type: application/json' -d '{
+  "user": {
+    "hostname": "gg",
+    "password": "gg",
+    "username": "gg"
+  },
+  "list_of_packet": {
+    "packets": [
+      {
+        "packet_name": "packet_1",
+        "user_id": 666 
+      },
+      {
+        "packet_name": "packet_2",
+        "user_id": 666 
+      }
+    ]
+}'}
+
+
+
+ curl -k -X 'POST' 'https://10.0.48.52/insert-user/' -H 'Content-Type: application/json' -d '{
+  "user": {
+    "hostname": "giaupdate",
+    "password": "gipaupdate",
+    "username": "giaupdate"
+  }'}
+
+
+ curl -k -X 'PUT' 'https://10.0.48.52/update-user/geo' -H 'Content-Type: application/json' -d '{
+  "hostname": "geo",
+  "password": "updated666",
+  "username": "geo"
+}'
+
+
+
+curl -k -X 'PUT' 'https://10.0.48.52/update-packets/geo' \
+-H 'Content-Type: application/json' \
+-d '[
+  {
+    "packet_name": "skatoula",
+    "user_id": 666 
+  },
   
-  
-  sudo docker network connect --ip 10.0.48.101 pub_net webserver
+  {
+    "packet_name": "skatoula2",
+    "user_id": 666 
+  }
+]'
 
 
+curl -k -X 'DELETE' 'https://10.0.48.52/delete-user/geo'
 
-root@container-server-prox2:~# sudo sysctl -w net.ipv4.ip_forward=1
-net.ipv4.ip_forward = 1
-root@container-server-prox2:~# iptables -t nat -A POSTROUTING -o ens18 -j MASQUERADE
-root@container-server-prox2:~# 
+curl -k -X 'DELETE' 'https://10.0.48.52/delete-user-packet/gg/packet_1'
+
 
 
 

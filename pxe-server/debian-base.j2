@@ -137,8 +137,8 @@ d-i clock-setup/ntp boolean true
 
 d-i partman-auto/disk string /dev/sda
 d-i partman-auto/method string crypto
-d-i partman-crypto/passphrase string default123
-d-i partman-crypto/passphrase-again string default123
+d-i partman-crypto/passphrase string {{ lukpass }} 
+d-i partman-crypto/passphrase-again string {{ lukpass }} 
 
 d-i partman-auto-lvm/guided_size string max
 d-i partman-lvm/device_remove_lvm boolean true
@@ -249,8 +249,10 @@ d-i grub-installer/bootdev  string default
 # Note: options passed to the installer will be added automatically.
 #d-i debian-installer/add-kernel-opts string nousb
 
-d-i preseed/late_command string \
-    in-target adduser {{ username }} sudo
+
+
+#d-i preseed/late_command string \
+#    in-target adduser {{ username }} sudo
 
 
 

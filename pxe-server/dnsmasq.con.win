@@ -1,0 +1,30 @@
+user=root
+server=8.8.8.8
+server=8.8.4.4
+
+
+log-dhcp
+log-queries
+log-facility=-
+
+
+interface=ens19
+address=/localrepo.local/192.168.199.1
+
+dhcp-range=192.168.199.5,192.168.199.20,24h
+dhcp-option=option:router,192.168.199.1
+dhcp-option=option:dns-server,192.168.199.1
+
+# Tag iPXE clients (they send user-class "iPXE")
+dhcp-match=set:ipxe,175 # option 175 is set by iPXE
+dhcp-userclass=set:ipxe,iPXE
+
+# Default PXE (non-iPXE) clients get iPXE binary
+dhcp-boot=tag:!ipxe,ipxe.lkrn
+
+# iPXE clients get the boot script instead
+dhcp-boot=tag:ipxe,winpe.ipxe
+#dhcp-match=set:efi-x86_64,option:client-arch,7
+#dhcp-boot=tag:efi-x86_64
+enable-tftp
+tftp-root=/srv/tftp-win

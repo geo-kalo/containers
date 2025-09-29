@@ -30,7 +30,8 @@ from fastapi import Form
 import hashlib
 import bcrypt
 from fastapi import Query
-
+import subprocess
+import base64
 
 
 
@@ -116,15 +117,20 @@ async def get_add_user_page():
 @app.post("/insert-user-page/", response_model=None)
 async def insert_user_via_page(distro: str = Form(...) ,hostname: str = Form(...), password: str = Form(...), username: str = Form(...), packets: Optional[List[str]] = Form(None), db: Session = Depends(get_db)):
     try:
-        print("xino1")
-        print(password)
-        #encrypted_password =generate_sha512_password(password)
         password_bytes = password.encode("utf-8")
-        encrypted_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode("utf-8")
-        print("xino2")
+        encrypted_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode("utf-8") 
+        if distro == 'windows10':
+            #utf16le_bytes = password.encode("utf-16le")
+            #encrypted_password = base64.b64encode(utf16le_bytes).decode("ascii")
+            #encrypted_password = base64.b64encode(password.encode("utf-16le")).decode("ascii").strip()
+            encrypted_password = password
+            #print(encrypted_password, password)
+            #print(password)
+            #decoded = base64.b64decode(encrypted_password).decode("utf-16le")
+            #print(decoded, encrypted_password, password)
         new_user = User(
             hostname=hostname,
-            password=encrypted_password,
+            password=encrypted_password.strip(),
             username=username,
             distro=distro
         )
@@ -186,19 +192,28 @@ async def update_rule(distro: str = Form(...),hostname: str = Form(...), passwor
     try:
         if hostname:
             fetched_user.hostname = hostname
-        if len(password) > 100:
+        if distro:
+            fetched_user.distro = distro
+        if len(password) > 50 and distro !='windows10':
             encrypted_password = password
             fetched_user.password = encrypted_password
         else:
-            encrypted_password =generate_sha512_password(password)
-            fetched_user.password = encrypted_password
+            utf16le_bytes = password.encode("utf-16le")
+            encrypted_password = base64.b64encode(utf16le_bytes).decode("ascii")
+        if distro == 'windows10':
+            #utf16le_bytes = password.encode("utf-16le")
+            #encrypted_password = base64.b64encode(utf16le_bytes).decode("ascii")
+            encrypted_password = password
+            #print(encrypted_password)
+            #print(password)
         if username:
             fetched_user.username = username
-        if distro:
-            fetched_user.distro = distro
+        #if distro:
+        #    fetched_user.distro = distro
         db.commit()
         db.refresh(fetched_user)
         return {"message": "User updated successfully", "user_name": username}
+
 
     except OperationalError as e:
         print(f"Connection error due to the following error: \n{str(e.orig)}")
@@ -211,16 +226,23 @@ async def update_rule(distro: str = Form(...),user_name: str = Form(...), hostna
 
     if hostname:
         fetched_user.hostname = hostname
-    if len(password) > 100:
-        encrypted_password = password
-        fetched_user.password = encrypted_password
-    else:
-        password_bytes = password.encode("utf-8")
-        encrypted_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode("utf-8")
-        fetched_user.password = encrypted_password
     if distro:
         fetched_user.distro = distro
-
+    if len(password) > 50 and distro !='windows10':
+        encrypted_password = password
+        fetched_user.password = encrypted_password
+    elif len(password) < 50 and distro != 'windows10':
+        password_bytes = password.encode("utf-8")
+        encrypted_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode("utf-8") 
+        #encrypted_password = password
+        fetched_user.password = encrypted_password
+    if distro == 'windows10':
+        #utf16le_bytes = password.encode("utf-16le")
+        #encrypted_password = base64.b64encode(utf16le_bytes).decode("ascii")
+        encrypted_password = password
+        fetched_user.password = encrypted_password
+        #print(encrypted_password)
+        #print(password)
     db.add(fetched_user)
     db.commit()
 
@@ -261,10 +283,10 @@ async def create_configuration(username: str, lukpass: str, db: Session = Depend
         if not fetched_user:
             return JSONResponse({"message": "User not found"}, status_code=404)
 
-        print(fetched_user.user_id)
-        print(fetched_user.password)
-        print(fetched_user.hostname)
-        print(fetched_user.distro)
+        #print(fetched_user.user_id)
+        #print(fetched_user.password)
+        #print(fetched_user.hostname)
+        #print(fetched_user.distro)
          
         tftp_root_path = ""
         if fetched_user.distro == 'debian':
@@ -310,6 +332,28 @@ async def create_configuration(username: str, lukpass: str, db: Session = Depend
 
         packets_string = ""
         packets_string = " ".join(packet_list)
+        
+        if fetched_user.distro == 'windows10':
+            command = 'cp /tmp/dnsmasq.conf.win /etc/dnsmasq.conf'
+            cp = subprocess.run(command, shell=True, capture_output=True, text=True)
+            print(cp)
+            env = Environment(loader=FileSystemLoader('/api/templates/'))
+            try:
+                template = env.get_template('autounattend.j2')
+            except TemplateError as e:
+                print(f"Template error: {str(e)}")
+                raise HTTPException(status_code=500, detail="Template error")
+            try:
+                content = template.render(password=fetched_user.password, username=fetched_user.username)
+            except TemplateError as e:
+                print(f"Error rendering template: {str(e)}")
+                raise HTTPException(status_code=500, detail="Error rendering template")
+
+            with open("/srv/nfs/win-install/autounattend.xml", 'w') as myfile:
+                myfile.write(content)
+
+
+        
 
         if fetched_user.distro == 'ubuntu':
             env = Environment(loader=FileSystemLoader('/api/templates/'))
@@ -338,7 +382,7 @@ async def create_configuration(username: str, lukpass: str, db: Session = Depend
                 raise HTTPException(status_code=500, detail="Template error")
 
             try:
-                content = template.render(hostname=fetched_user.hostname, password=fetched_user.password, username=fetched_user.username, packets=packet_list, packets_string=packets_string)
+                content = template.render(hostname=fetched_user.hostname, password=fetched_user.password, username=fetched_user.username, packets=packet_list, packets_string=packets_string ,lukpass=lukpass)
             except TemplateError as e:
                 print(f"Error rendering template: {str(e)}")
                 raise HTTPException(status_code=500, detail="Error rendering template")

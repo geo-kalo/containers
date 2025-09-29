@@ -2,22 +2,24 @@ FROM debian:latest
 
 RUN apt-get update && \
     apt install -y dnsmasq && \
-    apt install -y net-tools tcpdump vim iproute2 iputils-ping dnsutils apache2 libapache2-mod-wsgi-py3 python3-full python3-pip python3-venv virtualenv curl net-tools vim postgresql-client procps netcat-traditional
+    apt install -y net-tools tcpdump vim iproute2 iputils-ping dnsutils apache2 libapache2-mod-wsgi-py3 python3-full python3-pip python3-venv virtualenv curl net-tools vim postgresql-client procps netcat-traditional syslinux nano
   
 
 RUN             echo "deb http://archive.debian.org/debian buster-backports main" > /etc/apt/sources.list.d/backports.list
-RUN             apt-get update && apt-get -t buster-backports install tftp-hpa -y
+RUN             apt-get update && apt-get -t buster-backports install tftp-hpa samba wimtools -y
 
 
 COPY            activate_virtual_env.sh .
-RUN  		mkdir -p /srv/tftp && mkdir -p /var/www/html/ubuntu && mkdir /api && mkdir /venv && chmod u+x /activate_virtual_env.sh && mkdir /api/static && mkdir /api/templates		
-#RUN		chmod 777 /var/lib/misc/dnsmasq.leases
-#mkdir -p /srv/tftp && mkdir /venv && chmod u+x /activate_virtual_env.sh && mkdir -p /var/www/html/fastapi/doc/ && mkdir -p /var/www/html/ubuntu && rm -f /etc/apache2/sites-available/* && rm -f /etc/apache2/sites-enabled/000-default.conf
-#VOLUME  	/etc/dnsmasq.conf
+RUN  		mkdir -p /srv/tftp && mkdir -p /var/www/html/ubuntu && mkdir /api && mkdir /venv && chmod u+x /activate_virtual_env.sh && mkdir /api/static && mkdir /api/templates &&  mkdir -p /srv/nfs/win-install && mkdir -p /srv/winpe-creation && rm -f  /etc/samba/smb.conf		
+
 VOLUME		/srv/tftp/
 VOLUME		/srv/tftp-debian
+VOLUME		/srv/nfs/win-install
 
+COPY            default /tmp
+COPY            smb.conf /etc/samba/smb.conf
 COPY		tftp-root-selection.sh /
+COPY		autounattend.j2 /api/templates/
 COPY		basefile.j2 /api/templates/
 COPY		tftp-base.j2 /api/templates/
 COPY            debian-base.j2 /api/templates/
@@ -31,6 +33,9 @@ COPY		localrepo.conf /etc/apache2/sites-enabled/
 COPY            packets .
 COPY            main.py /api/main.py
 COPY            virtual-fastapi.conf /etc/apache2/sites-enabled/
+COPY		autounattend.xml /srv/nfs/win-install
+COPY		dnsmasq.con.win  /tmp/dnsmasq.conf.win
+COPY            tftp-win /srv/tftp-win/
 #COPY            ports.conf /etc/apache2/ports.conf
 
 USER		root
@@ -39,3 +44,4 @@ RUN		chmod 777 /entrypoint-dhcp.sh
 
 
 ENTRYPOINT 	sh /entrypoint-dhcp.sh
+

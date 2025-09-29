@@ -1,0 +1,30 @@
+ara thelo ena autounattend.xml
+to structure kai ta files /srv/tftp-win  -> g auto ta arxia prepei na kano extract apo to iso nomizo kai ton WinPE meso ADKpe addon installation
+to /etc/dnsmasq.conf gia to win
+
+
+
+episi thelo 
+    2  wimlib-imagex mountrw /srv/tftp-win/sources/boot.wim 1 /mnt/winpe
+    3  nano /mnt/winpe/Windows/System32/startnet.cmd
+    5  wimlib-imagex unmount /mnt/winpe --commit
+
+
+oste sto starnet.cmd na po sto mixanima na traxivei ta install files apo to iso kai na pare to automated file 
+exei mesa kati san z:\\smb-server\win-install kai ato unatteneded file
+
+sto entrypoint tha do pos pernei ta arxai
+https://www.tenforums.com/tutorials/96683-create-media-automated-unattended-install-windows-10-a.html#Step4
+
+
+ola ta files tou iso gia ta windows kai to unatteneded file vriskonte sto volume /srv/nfs/win-install. 
+Ta perisotara arxia pou xriazointe iparxoun sot /home/geo/webserver kai sto git alla tha prepei na ginei extra doulia pera po to image. px na ginei manual mount to iso kai copy ta arxia sto /srv/nfs/win-install.
+
+
+docker run -d --name webserver --network host --privileged -v /home/geo/dnsmasq.conf:/etc/dnsmasq.conf -v /localrepo:/var/www/html/ubuntu -v /srv/tftp:/srv/tftp -v /srv/tftp-debian:/srv/tftp-debian -v /srv/nfs/win-install:/srv/nfs/win-install -v /srv/winpe-creation:/srv/winpe-creation webserver
+
+
+
+
+to win-tftp einai megalo den mporo na to valo sto git. periexei ola ta files gia to proto stage tou installtation.
+to wxo sto pc mou kato apo to dir wevserver
